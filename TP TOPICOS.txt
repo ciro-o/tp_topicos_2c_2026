@@ -1,0 +1,119 @@
+TP TOPICOS
+
+--------------------- ARCHIVOS ---------------------
+
+•	transferencias_personales_clean.csv
+typedef struct {
+
+	int anio;
+	int trimestre;
+
+	//Aca entra la struct de P_Continentes
+	//char pais_cod[3];
+	//char pais_desc[20];
+	//char continente[20];
+
+	P_Continentes;	
+
+	char operacion[2]; //OPERACION toma los valores “C” para crédito y “D” para débito.
+	float monto; //MONTO usa punto como separador decimal.
+
+}Transferencias;
+
+•	paises_continentes.csv
+typedef struct{
+
+	char pais_cod[3];
+	char pais_desc[20];
+	char continente[20];
+}P_Continentes;
+
+--------------------- Funciones ---------------------
+
+// Esto es un archivo aparte
+1) Leer archivos de operaciones (Transferencias personales)
+2) Agrupar información por pais (por código de país capaz)
+3) Contar cantidad de operaciones por país agrupados
+4) Sumar el importe de todas las operaciones Credito
+5) Sumar el importe de todas las operaciones Debito
+6) Ordenar de mayor a menor según la columna monto
+7) Mostrar por pantalla - Código del país, Nombre del país, Cantidad de registros, Total de créditos, Total de débitos.
+
+// 2.	Clasificación Resumen de operaciones por continente.
+
+Arch: Paises_continentes.csv
+Mostrar Continente, Registros totales y Cantidad de Credito sumado y Debito Sumado
+
+// 3.	Saldo Trimestral por país.
+
+	1. El usuario ingresa un año (Validarlo)
+	2. se abre el archivo de operaciones
+	3. Sumar por cada trimestre (t1, t2, t3, t4) el monto total de Credito y Debito
+	4. El saldo del trimestre se calculo como = Creditos de T1 - Debitos de T1, asi con cada trimestre
+	5. Listar todos los países con sus trimestres, siempre y cuando corresponden al año
+
+
+//4.	Totales anuales y variación interanual
+
+Arch: operaciones
+Calcular el monto de débitos y créditos por año
+Calcular el Saldo total = Creditos - Debitos
+Calcular la Variación = ((Saldo actual − Saldo año anterior) / Saldo año anterior) × 100
+
+//5.	Ranking de países por tipo de operación
+
+1. solicito el numero de países que quiere listar
+2. operación a considerar C o D --> esto se lo mando como char puntero y busco igual con ese char
+3. sumo el total de crédito/debito según corresponda, la cantidad total de registros
+4. Ordeno de mayor a menor según registros o según total de crédito/debito (Serian 2 matrices mostradas)
+
+//6.	Participación porcentual por continente 
+
+Arch: operaciones
+1. Miro el país_cod, sumo el tipo de operación C o D, y lo sumo al continente que pertenezca
+2. Agarro los montos de C o D
+
+//7.	Generación de archivo intermedio de operaciones trimestrales
+
+Generar el archivo: transferencias_base_larga.csv
+
+//8.	Promedio trimestral por país y tipo de operación
+
+//usa el punto 7
+
+//9.	Promedio trimestral por continente, operación y año
+
+//usa el punto 7
+
+//10.	 Menú principal
+
+1.	Totales por país. 
+2.	Totales por continente. 
+3.	Saldo trimestral por país. 
+4.	Totales anuales y variación interanual. 
+5.	Ranking de países. 
+6.	Participación porcentual por continente. 
+7.	Generación del archivo intermedio transferencias_base_larga.csv. 
+8.	Promedio trimestral por país. 
+9.	Promedio trimestral por continente, operación y año. 
+10.	Salir.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
