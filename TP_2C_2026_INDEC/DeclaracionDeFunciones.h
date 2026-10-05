@@ -5,6 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+//----------- Libreria Externa -----------
+#include <windows.h>
+
 
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED

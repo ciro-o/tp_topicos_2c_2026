@@ -5,10 +5,11 @@
 
 int main()
 {
+    SetConsoleOutputCP(CP_UTF8);
     int opcion;
     printf
-    ("1. Totales por país.\n" 
-        "2. Totales por continente.\n" 
+    (   "1. Totales por país.\n"
+        "2. Totales por continente.\n"
         "3. Saldo trimestral por país.\n"
         "4. Totales anuales y variación interanual.\n"
         "5. Ranking de países.\n"
@@ -25,11 +26,11 @@ int main()
     case 1:
         //printf("opcion %d", opcion);
         break;
-    
+
     case 2:
         //printf("opcion %d", opcion);
         break;
-    
+
     case 3:
         //printf("opcion %d", opcion);
         break;
