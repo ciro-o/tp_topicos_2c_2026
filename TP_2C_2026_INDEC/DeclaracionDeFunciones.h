@@ -23,18 +23,20 @@ typedef struct
 {
     int anio;
     int trimestre;
-
-    //Aca entra la struct de P_Continentes
-    //char pais_cod[3];
-    //char pais_desc[20];
-    //char continente[20];
-
-    P_Continentes p;
-
+    char pais_cod[3];
+    char pais_desc[20];
     char operacion[2]; //OPERACION toma los valores “C” para crédito y “D” para débito.
     float monto; //MONTO usa punto como separador decimal.
 
 } Transferencias;
+
+typedef struct
+{
+    char continente[20];
+    long registros;
+    double total_credito;
+    double total_debito;
+} Resumen_Continente;
 
 //--------- Funciones ----------
 

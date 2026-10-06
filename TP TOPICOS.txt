@@ -42,7 +42,8 @@ typedef struct{
 // 2.	Clasificación Resumen de operaciones por continente.
 
 Arch: Paises_continentes.csv
-Mostrar Continente, Registros totales y Cantidad de Credito sumado y Debito Sumado
+Calcular el total de registros, cred y deb de cada país. Hacer un merge entro los dos .csv a través del cod de país para obtener el continente de cada país y acumular la sumatoria de los totales de registros, cred y deb.
+Mostrar Continente, Registros totales y Cantidad de Crédito sumado y Debito Sumado.
 
 // 3.	Saldo Trimestral por país.
 

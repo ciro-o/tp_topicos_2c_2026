@@ -15,8 +15,8 @@ void MostrarArchivo(Transferencias *t, int* Contador_Registros){
         sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f",
                &t->anio,
                &t->trimestre,
-               t->p.pais_cod,
-               t->p.pais_desc,
+               t->pais_cod,
+               t->pais_desc,
                t->operacion,
                &t->monto);
 
