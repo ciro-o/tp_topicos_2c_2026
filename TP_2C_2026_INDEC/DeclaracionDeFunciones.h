@@ -10,6 +10,14 @@
 
 //---------------- Structs ---------------
 
+//•	paises_continentes.csv
+typedef struct{
+
+	char pais_cod[3];
+	char pais_desc[20];
+	char continente[20];
+}P_Continentes;
+
 //•	transferencias_personales_clean.csv
 typedef struct {
 
@@ -21,19 +29,13 @@ typedef struct {
 	//char pais_desc[20];
 	//char continente[20];
 
-	P_Continentes p;	
+	P_Continentes p;
 
 	char operacion[2]; //OPERACION toma los valores “C” para crédito y “D” para débito.
 	float monto; //MONTO usa punto como separador decimal.
 
 }Transferencias;
 
-//•	paises_continentes.csv
-typedef struct{
-
-	char pais_cod[3];
-	char pais_desc[20];
-	char continente[20];
-}P_Continentes;
-
+//--------- Funciones ----------
+void MostrarArchivo(Transferencias *t); 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED

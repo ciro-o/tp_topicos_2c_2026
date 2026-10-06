@@ -6,6 +6,9 @@
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
+
+    Transferencias t;
+
     int opcion;
     printf
     (   "1. Totales por país.\n"
@@ -25,6 +28,7 @@ int main()
     {
     case 1:
         //printf("opcion %d", opcion);
+        MostrarArchivo(&t);
         break;
 
     case 2:
