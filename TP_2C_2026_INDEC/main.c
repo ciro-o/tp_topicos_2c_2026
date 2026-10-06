@@ -41,7 +41,7 @@ int main()
     case 2:
         //printf("opcion %d", opcion);
         //esta funcion no va aca
-        MostrarArchivoPorPais(&t, Contador_Registros);
+        MostrarArchivoPorPais(&t, 5411);
         break;
 
     case 3:

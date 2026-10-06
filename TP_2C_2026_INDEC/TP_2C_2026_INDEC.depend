@@ -19,10 +19,10 @@
 
 1791289990 c:\users\lucas\onedrive\documentos\github\tp_topicos_2c_2026\tp_2c_2026_indec\declaraciondefunciones.h
 
-1791299109 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
+1791315068 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
 	"DeclaracionDeFunciones.h"
 
-1791297959 c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\declaraciondefunciones.h
+1791312020 c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\declaraciondefunciones.h
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
@@ -36,6 +36,6 @@
 	<ctype.h>
 	<windows.h>
 
-1791298477 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\desarrollodefunciones.c
+1791314610 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\desarrollodefunciones.c
 	"DeclaracionDeFunciones.h"
 
