@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1791248668 source:c:\users\ciro_\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\desarrollodefunciones.c
+1791249129 source:c:\users\ciro_\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\desarrollodefunciones.c
 	"DeclaracionDeFunciones.h"
 
 1791248556 c:\users\ciro_\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\declaraciondefunciones.h
@@ -9,6 +9,6 @@
 	<ctype.h>
 	<windows.h>
 
-1791248562 source:c:\users\ciro_\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
+1791249287 source:c:\users\ciro_\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
 	"DeclaracionDeFunciones.h"
 

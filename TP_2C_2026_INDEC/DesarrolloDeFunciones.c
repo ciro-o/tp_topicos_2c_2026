@@ -20,9 +20,14 @@ void MostrarArchivo(Transferencias *t){
                t->operacion,
                &t->monto);
 
-        printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s | Operación: %s | Monto: %.2f\n\n",
+        printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
                t->anio, t->trimestre, t->p.pais_cod, t->p.pais_desc, t->operacion, t->monto);
     }
 
     fclose(file1);
+}
+
+void MostrarArchivoPorPais(Transferencias *t){
+
+
 }

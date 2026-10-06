@@ -37,5 +37,19 @@ typedef struct {
 }Transferencias;
 
 //--------- Funciones ----------
-void MostrarArchivo(Transferencias *t); 
+
+//1) Leer archivos de operaciones (Transferencias personales)
+void MostrarArchivo(Transferencias *t);
+//2) Agrupar información por pais (por código de país capaz) (vector dinamico)
+void MostrarArchivoPorPais(Transferencias *t);
+//3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
+void MostrarCantOperacionesPorPais(Transferencias *t);
+//4) Sumar el importe de todas las operaciones Debito (por código de país capaz) (vector dinamico)
+void ImporteDebitoPorPais(Transferencias *t);
+//5) Sumar el importe de todas las operaciones Credito (por código de país capaz) (vector dinamico)
+void ImporteCreditoPorPais(Transferencias *t);
+//6) Ordenar de mayor a menor según la columna monto
+void OrdenarPorMonto(Transferencias *t);
+
+
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED
