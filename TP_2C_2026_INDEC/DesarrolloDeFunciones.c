@@ -32,5 +32,9 @@ void MostrarArchivo(Transferencias *t)
 void MostrarArchivoPorPais(Transferencias *t)
 {
 
+        //malloc 
+        Transferencias *puntero;
+        puntero = malloc(sizeof(Transferencias));
+        free(puntero);
 
 }

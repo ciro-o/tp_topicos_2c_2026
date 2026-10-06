@@ -31,11 +31,14 @@ int main()
     {
     case 1:
         //printf("opcion %d", opcion);
+        //esta funcion no va aca
         MostrarArchivo(&t);
         break;
 
     case 2:
         //printf("opcion %d", opcion);
+        //esta funcion no va aca
+        MostrarArchivoPorPais(&t);
         break;
 
     case 3:
