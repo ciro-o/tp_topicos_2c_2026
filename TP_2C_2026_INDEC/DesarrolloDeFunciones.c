@@ -1,16 +1,18 @@
 #include "DeclaracionDeFunciones.h"
 
-void MostrarArchivo(Transferencias *t){
-
+void MostrarArchivo(Transferencias *t)
+{
     FILE *file1 = fopen("transferencias_personales_clean.csv", "r");
-    if(file1 == NULL){
+    if(file1 == NULL)
+    {
         printf("Error al abrir archivo\n");
         return;
     }
 
     char linea[256];
 
-    while(fgets(linea, sizeof(linea), file1)) {
+    while(fgets(linea, sizeof(linea), file1))
+    {
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
         sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f",
                &t->anio,
@@ -27,7 +29,8 @@ void MostrarArchivo(Transferencias *t){
     fclose(file1);
 }
 
-void MostrarArchivoPorPais(Transferencias *t){
+void MostrarArchivoPorPais(Transferencias *t)
+{
 
 
 }
