@@ -12,26 +12,30 @@
 1791249287 source:c:\users\ciro_\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
 	"DeclaracionDeFunciones.h"
 
-<<<<<<< Updated upstream
+1791288751 ated upstream
+
 1791289875 source:c:\users\lucas\onedrive\documentos\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
 	"DeclaracionDeFunciones.h"
 
 1791289990 c:\users\lucas\onedrive\documentos\github\tp_topicos_2c_2026\tp_2c_2026_indec\declaraciondefunciones.h
-=======
-1791290023 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
+
+1791299109 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\main.c
 	"DeclaracionDeFunciones.h"
 
-1791288751 c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\declaraciondefunciones.h
->>>>>>> Stashed changes
+1791297959 c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\declaraciondefunciones.h
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
 	<ctype.h>
 	<windows.h>
 
-<<<<<<< Updated upstream
-=======
-1791289279 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\desarrollodefunciones.c
+1791289279 shed changes
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<ctype.h>
+	<windows.h>
+
+1791298477 source:c:\users\botmaker\documents\github\tp_topicos_2c_2026\tp_2c_2026_indec\desarrollodefunciones.c
 	"DeclaracionDeFunciones.h"
 
->>>>>>> Stashed changes

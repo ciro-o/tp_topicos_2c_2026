@@ -39,9 +39,9 @@ typedef struct
 //--------- Funciones ----------
 
 //1) Leer archivos de operaciones (Transferencias personales)
-void MostrarArchivo(Transferencias *t);
+void MostrarArchivo(Transferencias *t, int *);
 //2) Agrupar información por pais (por código de país capaz) (vector dinamico)
-void MostrarArchivoPorPais(Transferencias *t);
+void MostrarArchivoPorPais(Transferencias *t, int *);
 //3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
 void MostrarCantOperacionesPorPais(Transferencias *t);
 //4) Sumar el importe de todas las operaciones Debito (por código de país capaz) (vector dinamico)

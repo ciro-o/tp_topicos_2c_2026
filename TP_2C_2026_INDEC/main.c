@@ -9,6 +9,8 @@ int main()
 
     //UTILS
     Transferencias t;
+    int cont = 0;
+    int *Contador_Registros = &cont; //almacena la cantidad de registros del archivo de operaciones se usa en MostrarArchivo();
 
     //FIN UTILS
 
@@ -24,6 +26,7 @@ int main()
         "8. Promedio trimestral por país.\n"
         "9. Promedio trimestral por continente, operación y año.\n"
         "10. Salir.\n");
+
     printf("Elija una opcíon: ");
     scanf("%d", &opcion);
 
@@ -32,13 +35,13 @@ int main()
     case 1:
         //printf("opcion %d", opcion);
         //esta funcion no va aca
-        MostrarArchivo(&t);
+        MostrarArchivo(&t, Contador_Registros);
         break;
 
     case 2:
         //printf("opcion %d", opcion);
         //esta funcion no va aca
-        MostrarArchivoPorPais(&t);
+        MostrarArchivoPorPais(&t, Contador_Registros);
         break;
 
     case 3:
