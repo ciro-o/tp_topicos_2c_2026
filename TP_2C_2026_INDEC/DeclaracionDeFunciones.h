@@ -65,7 +65,6 @@ void ImporteCreditoPorPais(Transferencias *t);
 //6) Ordenar de mayor a menor según la columna monto
 void OrdenarPorMonto(Transferencias *t);
 
-<<<<<<< HEAD
 // Punto 2
 // Punto 3
 // Punto 4
@@ -75,7 +74,6 @@ void OrdenarPorMonto(Transferencias *t);
 // Punto 8
 // Punto 9
 // Punto 10
-=======
 //TDA Vector
 void crearVector(tdaVector *v, size_t tamElem, int cap);
 void destruirVector(tdaVector *v);
@@ -85,6 +83,5 @@ void insertarAlFinal(tdaVector *v, void *elem);
 void ProcesarContinentes();
 void MostrarContinentes(Resumen_Continente *v);
 void cargarVec(tdaVector *v, char *nombArch);
->>>>>>> 5e7437ab0d31de5a55e0ed4cc1e50b961443e46e
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED
