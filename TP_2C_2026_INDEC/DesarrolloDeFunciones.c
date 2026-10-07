@@ -86,6 +86,24 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
         }
 
         }
+
+        FILE *salida = fopen("paises_ordenado.txt", "w");
+        if (salida == NULL) {
+            printf("No se pudo crear el archivo\n");
+            return;
+        }
+
+        for (j = 0; j < aux; j++) {
+            fprintf(salida, "Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
+                    puntero[j].anio,
+                    puntero[j].trimestre,
+                    puntero[j].p.pais_cod,
+                    puntero[j].p.pais_desc,
+                    puntero[j].operacion,
+                puntero[j].monto);
+        }
+
+        fclose(salida);
     
         //printeo ordenado
         for(j=0; j<aux; j++){
