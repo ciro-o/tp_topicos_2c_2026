@@ -63,28 +63,19 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
                puntero[aux].operacion,
                &puntero[aux].monto);
 
-               /* printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
-               puntero[aux].anio,
-               puntero[aux].trimestre,
-               puntero[aux].p.pais_cod,
-               puntero[aux].p.pais_desc,
-               puntero[aux].operacion,
-               puntero[aux].monto); */
-
             aux++;
         }
-
-        int j=0;
-        int k=0;
-        for(k=0; k < aux -1; k++){
-                for(j=1; j<aux; j++){
-                    if (strcmp(puntero[j-1].p.pais_cod, puntero[j].p.pais_cod) > 0) {
-                    temp = puntero[j];
-                    puntero[j] = puntero[j-1];
-                    puntero[j-1] = temp;
+        Transferencias *reg;
+        int k;
+        //ordenamiento
+        for (k = 0; k < aux - 1; k++) {
+            for (reg = puntero + 1; reg < puntero + aux; reg++) {
+                if (strcmp((reg-1)->p.pais_cod, reg->p.pais_cod) > 0) {
+                    temp = *reg;
+                    *reg = *(reg-1);
+                    *(reg-1) = temp;
                 }
-        }
-
+            }
         }
 
         FILE *salida = fopen("paises_ordenado.txt", "w");
@@ -93,32 +84,20 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
             return;
         }
 
-        for (j = 0; j < aux; j++) {
+        //Escritura de archivo
+
+        for (reg = puntero; reg < puntero + aux; reg++) {
             fprintf(salida, "Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
-                    puntero[j].anio,
-                    puntero[j].trimestre,
-                    puntero[j].p.pais_cod,
-                    puntero[j].p.pais_desc,
-                    puntero[j].operacion,
-                puntero[j].monto);
+                reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
         }
 
         fclose(salida);
     
         //printeo ordenado
-        for(j=0; j<aux; j++){
+        for (reg = puntero; reg < puntero + aux; reg++) {
             printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
-               puntero[j].anio,
-               puntero[j].trimestre,
-               puntero[j].p.pais_cod,
-               puntero[j].p.pais_desc,
-               puntero[j].operacion,
-               puntero[j].monto);
-        }
-   
-       
-
-
+                reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
+}
         free(puntero);
         fclose(file1);
 
@@ -127,7 +106,7 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
 void MostrarCantOperacionesPorPais(Transferencias *t){
 
 
-    
+
 
 
 
