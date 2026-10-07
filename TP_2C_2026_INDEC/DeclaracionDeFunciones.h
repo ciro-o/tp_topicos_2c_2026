@@ -54,5 +54,14 @@ void ImporteCreditoPorPais(Transferencias *t);
 //6) Ordenar de mayor a menor según la columna monto
 void OrdenarPorMonto(Transferencias *t);
 
+// Punto 2
+// Punto 3
+// Punto 4
+// Punto 5
+// Punto 6
+// Punto 7
+// Punto 8
+// Punto 9
+// Punto 10
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED

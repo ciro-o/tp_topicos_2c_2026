@@ -36,7 +36,10 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
         //malloc
         Transferencias *puntero;
 
+        // Este es para leer todo el documento
         puntero = malloc(sizeof(Transferencias) * cont);
+
+        //este es para tener los paises
 
         FILE *file1 = fopen("transferencias_personales_clean.csv", "r");
             if(file1 == NULL){
@@ -56,13 +59,15 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
                puntero[aux].operacion,
                &puntero[aux].monto);
 
-               printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
+
+
+               /* printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
                puntero[aux].anio,
                puntero[aux].trimestre,
                puntero[aux].p.pais_cod,
                puntero[aux].p.pais_desc,
                puntero[aux].operacion,
-               puntero[aux].monto);
+               puntero[aux].monto); */
 
                                aux++;
 
