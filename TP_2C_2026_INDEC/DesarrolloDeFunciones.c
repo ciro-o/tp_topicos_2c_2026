@@ -74,3 +74,48 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
         fclose(file1);
 
 }
+
+void crearVector(tdaVector *v, size_t tamElem, int cap)
+{
+    v->vec = (void*)malloc(tamElem * cap);
+    if(!v){
+        printf("Error en la memoria\n");
+        exit(ERROR);
+    }
+
+    v->cantElem = 0;
+    v->tamElem = tamElem;
+    v->cap = cap;
+}
+
+void destruirVector(tdaVector *v)
+{
+    free(v->vec);
+}
+
+bool redimensionar(tdaVector *v, size_t nuevaCap)
+{
+    void *nVec = (void*)realloc(v->vec, nuevaCap * v->tamElem);
+    if(!nVec)
+        return false;
+
+    v->vec = nVec;
+    v->cap = nuevaCap;
+
+    return true;
+}
+
+void insertarAlFinal(tdaVector *v, void *elem)
+{
+    if(v->cantElem == v->cap){
+        if(!redimensionar(v, v->tamElem * 2)){
+            printf("Error en la memoria\n");
+            exit(ERROR);
+        }
+    }
+
+    void *ult = v->vec + (v->cantElem*v->tamElem);
+    memcpy(ult, elem, v->tamElem);
+    v->cantElem++;
+}
+
