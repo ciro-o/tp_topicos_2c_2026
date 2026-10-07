@@ -35,17 +35,21 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
 
         //malloc
         Transferencias *puntero;
+        Transferencias temp;
 
         // Este es para leer todo el documento
         puntero = malloc(sizeof(Transferencias) * cont);
-
-        //este es para tener los paises
+        if(puntero == NULL){
+            printf("No hay memoria");
+            return;
+        }
 
         FILE *file1 = fopen("transferencias_personales_clean.csv", "r");
             if(file1 == NULL){
                 printf("Error al abrir archivo\n");
         return;
         }
+        //Aca tengo el archivo en vector
         int aux = 0;
         char linea[256];
         fgets(linea, sizeof(linea), file1);
@@ -59,8 +63,6 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
                puntero[aux].operacion,
                &puntero[aux].monto);
 
-
-
                /* printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
                puntero[aux].anio,
                puntero[aux].trimestre,
@@ -69,10 +71,34 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
                puntero[aux].operacion,
                puntero[aux].monto); */
 
-                               aux++;
-
+            aux++;
         }
 
+        int j=0;
+        int k=0;
+        for(k=0; k < aux -1; k++){
+                for(j=1; j<aux; j++){
+                    if (strcmp(puntero[j-1].p.pais_cod, puntero[j].p.pais_cod) > 0) {
+                    temp = puntero[j];
+                    puntero[j] = puntero[j-1];
+                    puntero[j-1] = temp;
+                }
+        }
+
+        }
+    
+        //printeo ordenado
+        for(j=0; j<aux; j++){
+            printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
+               puntero[j].anio,
+               puntero[j].trimestre,
+               puntero[j].p.pais_cod,
+               puntero[j].p.pais_desc,
+               puntero[j].operacion,
+               puntero[j].monto);
+        }
+   
+       
 
 
         free(puntero);

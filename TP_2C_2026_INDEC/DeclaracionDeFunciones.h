@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdbool.h>
 //----------- Libreria Externa -----------
 #include <windows.h>
 
