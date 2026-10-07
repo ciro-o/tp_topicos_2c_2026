@@ -1,6 +1,9 @@
 #ifndef DECLARACIONDEFUNCIONES_H_INCLUDED
 #define DECLARACIONDEFUNCIONES_H_INCLUDED
 
+#define TAMLINEA 100
+#define ERROR -1
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -39,6 +42,14 @@ typedef struct
     double total_debito;
 } Resumen_Continente;
 
+typedef struct
+{
+    void *vec;
+    size_t tamElem;
+    int cantElem;
+    int cap;
+} tdaVector;
+
 //--------- Funciones ----------
 
 //1) Leer archivos de operaciones (Transferencias personales)
@@ -54,6 +65,7 @@ void ImporteCreditoPorPais(Transferencias *t);
 //6) Ordenar de mayor a menor según la columna monto
 void OrdenarPorMonto(Transferencias *t);
 
+<<<<<<< HEAD
 // Punto 2
 // Punto 3
 // Punto 4
@@ -63,5 +75,16 @@ void OrdenarPorMonto(Transferencias *t);
 // Punto 8
 // Punto 9
 // Punto 10
+=======
+//TDA Vector
+void crearVector(tdaVector *v, size_t tamElem, int cap);
+void destruirVector(tdaVector *v);
+bool redimensionar(tdaVector *v, size_t nuevaCap);
+void insertarAlFinal(tdaVector *v, void *elem);
+
+void ProcesarContinentes();
+void MostrarContinentes(Resumen_Continente *v);
+void cargarVec(tdaVector *v, char *nombArch);
+>>>>>>> 5e7437ab0d31de5a55e0ed4cc1e50b961443e46e
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED
