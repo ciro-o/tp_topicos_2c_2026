@@ -124,6 +124,20 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
 
 }
 
+void MostrarCantOperacionesPorPais(Transferencias *t){
+
+
+    
+
+
+
+
+
+
+
+
+}
+
 void crearVector(tdaVector *v, size_t tamElem, int cap)
 {
     v->vec = (void*)malloc(tamElem * cap);
