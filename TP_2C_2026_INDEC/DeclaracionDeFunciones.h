@@ -51,6 +51,16 @@ typedef struct
     int cap;
 } tdaVector;
 
+//para el punto 1.3 que cuenta registros y montos
+typedef struct 
+{
+    char pais_cod[3];
+    char pais_desc[20];
+    long registros;
+    double total_credito;
+    double total_debito;
+} Resumen_Pais;
+
 //--------- Funciones ----------
 
 //1) Leer archivos de operaciones (Transferencias personales)
@@ -58,7 +68,7 @@ void MostrarArchivo(Transferencias *t, int *);
 //2) Agrupar información por pais (por código de país capaz) (vector dinamico)
 void MostrarArchivoPorPais(Transferencias *t, int );
 //3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
-void MostrarCantOperacionesPorPais(Transferencias *t);
+void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp);
 //4) Sumar el importe de todas las operaciones Debito (por código de país capaz) (vector dinamico)
 void ImporteDebitoPorPais(Transferencias *t);
 //5) Sumar el importe de todas las operaciones Credito (por código de país capaz) (vector dinamico)

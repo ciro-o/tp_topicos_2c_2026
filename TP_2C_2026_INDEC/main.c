@@ -9,6 +9,7 @@ int main()
 
     //UTILS
     Transferencias t;
+    Resumen_Pais rp;
     int cont = 0;
     int *Contador_Registros = &cont; //almacena la cantidad de registros del archivo de operaciones se usa en MostrarArchivo();
 
@@ -46,6 +47,8 @@ int main()
 
     case 3:
         //printf("opcion %d", opcion);
+        //no va aca
+        MostrarCantOperacionesPorPais(&t, &rp);
         break;
 
     case 4:
