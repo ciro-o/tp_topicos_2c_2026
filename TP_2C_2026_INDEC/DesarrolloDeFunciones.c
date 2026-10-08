@@ -330,10 +330,69 @@ void cargarVec(Vector *v, char *nombArch)
     fclose(fp);
 }
 
+P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc)
+{
+    char *actual = (char *)v->vec;
+    char *fin = actual + (v->cantElem * v->tamElem);
+    P_Continentes *p;
+
+    while (actual < fin)
+    {
+        p = (P_Continentes *)actual;
+        if (strcmp(p->pais_desc, pais_desc) == 0)
+        {
+            return p;
+        }
+        actual += v->tamElem;
+    }
+
+    return NULL;
+}
+
+Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente)
+{
+    Resumen_Continente *i;
+    for (i = inicio; i < fin; i++)
+    {
+        if (strcmp(i->continente, continente) == 0)
+        {
+            return i;
+        }
+    }
+    return NULL;
+}
+
 void ProcesarContinentes()
 {
     Vector v;
-    crearVector(&v,sizeof(P_Continentes),10);
-    cargarVec(&v, "transferencias_personales_clean.csv");
+    FILE *pf = fopen("transferencias_personales_clean.csv", "r");
+    if(pf == NULL)
+    {
+        printf("Error al abrir archivo\n");
+        return;
+    }
 
+    crearVector(&v,sizeof(P_Continentes),10);
+    cargarVec(&v, "paises_continentes.csv");
+
+    char linea[TAMLINEA];
+    Transferencias *reg;
+    Resumen_Continente vec[7]; //Americas;Europe;Oceania;Asia;Africa;Antartica;Indeterminado;
+
+    fgets(linea, sizeof(linea), pf);
+    while(fgets(linea, sizeof(linea), pf))
+    {
+        sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f",
+               &reg->anio,
+               &reg->trimestre,
+               reg->p.pais_cod,
+               reg->p.pais_desc,
+               reg->operacion,
+               &reg->monto);
+
+
+    }
+
+    destruirVector(&v);
+    fclose(pf);
 }

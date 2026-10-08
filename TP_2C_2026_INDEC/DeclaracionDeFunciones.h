@@ -35,6 +35,7 @@ typedef struct
 
 } Transferencias;
 
+//Para el punto 2
 typedef struct
 {
     char continente[20];
@@ -86,6 +87,8 @@ void OrdenarPorMonto(Transferencias *t);
 
 // Punto 2
 void ProcesarContinentes();
+P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc);
+Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente);
 void cargarVec(Vector *v, char *nombArch);
 void MostrarContinentes(void *elem);
 // Punto 3
