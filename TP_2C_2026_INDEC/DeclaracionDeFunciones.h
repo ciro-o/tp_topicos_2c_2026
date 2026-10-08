@@ -49,10 +49,10 @@ typedef struct
     size_t tamElem;
     int cantElem;
     int cap;
-} tdaVector;
+} Vector;
 
 //para el punto 1.3 que cuenta registros y montos
-typedef struct 
+typedef struct
 {
     char pais_cod[3];
     char pais_desc[20];
@@ -62,6 +62,14 @@ typedef struct
 } Resumen_Pais;
 
 //--------- Funciones ----------
+typedef void (*Accion)(void*);
+
+//TDA Vector.
+void crearVector(Vector *v, size_t tamElem, int cap);
+void destruirVector(Vector *v);
+bool redimensionar(Vector *v, size_t nuevaCap);
+void insertarAlFinal(Vector *v, void *elem);
+void vectorRecorrer( const Vector * v, Accion accion);
 
 //1) Leer archivos de operaciones (Transferencias personales)
 void MostrarArchivo(Transferencias *t, int *);
@@ -77,6 +85,9 @@ void ImporteCreditoPorPais(Transferencias *t);
 void OrdenarPorMonto(Transferencias *t);
 
 // Punto 2
+void ProcesarContinentes();
+void cargarVec(Vector *v, char *nombArch);
+void MostrarContinentes(void *elem);
 // Punto 3
 // Punto 4
 // Punto 5
@@ -85,14 +96,5 @@ void OrdenarPorMonto(Transferencias *t);
 // Punto 8
 // Punto 9
 // Punto 10
-//TDA Vector
-void crearVector(tdaVector *v, size_t tamElem, int cap);
-void destruirVector(tdaVector *v);
-bool redimensionar(tdaVector *v, size_t nuevaCap);
-void insertarAlFinal(tdaVector *v, void *elem);
-
-void ProcesarContinentes();
-void MostrarContinentes(Resumen_Continente *v);
-void cargarVec(tdaVector *v, char *nombArch);
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED
