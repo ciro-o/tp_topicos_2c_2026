@@ -1,5 +1,67 @@
 #include "DeclaracionDeFunciones.h"
 
+void parsear(char *linea, Transferencias *reg)
+{
+    char *act;
+
+    act = strchr(linea, '\n');
+    if (act)
+        *act = '\0';
+    act = strchr(linea, '\r');
+    if (act)
+        *act = '\0';
+
+    act = strrchr(linea, ';');
+    sscanf(act + 1, "%f", &reg->monto);
+    *act = '\0';
+
+    act = strrchr(linea, ';');
+    *reg->operacion = *(act + 1);
+    *(reg->operacion + 1) = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, ';');
+    strncpy(reg->p.pais_desc, act + 1, sizeof(reg->p.pais_desc) - 1);
+    reg->p.pais_desc[sizeof(reg->p.pais_desc) - 1] = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, ';');
+    strncpy(reg->p.pais_cod, act + 1, sizeof(reg->p.pais_cod) - 1);
+    reg->p.pais_cod[sizeof(reg->p.pais_cod) - 1] = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, ';');
+    sscanf(act + 1, "%d", &reg->trimestre);
+    *act = '\0';
+
+    sscanf(linea, "%d", &reg->anio);
+}
+
+void parsearCont(char *linea, P_Continentes *reg)
+{
+    char *act;
+
+    act = strchr(linea, '\n');
+    if (act)
+        *act = '\0';
+    act = strchr(linea, '\r');
+    if (act)
+        *act = '\0';
+
+    act = strrchr(linea, ';');
+    strncpy(reg->continente, act + 1, sizeof(reg->continente) - 1);
+    *(reg->continente + sizeof(reg->continente) - 1) = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, ';');
+    strncpy(reg->pais_desc, act + 1, sizeof(reg->pais_desc) - 1);
+    *(reg->pais_desc + sizeof(reg->pais_desc) - 1) = '\0';
+    *act = '\0';
+
+    strncpy(reg->pais_cod, linea, sizeof(reg->pais_cod) - 1);
+    *(reg->pais_cod + sizeof(reg->pais_cod) - 1) = '\0';
+}
+
 void MostrarArchivo(Transferencias *t, int* Contador_Registros)
 {
 
@@ -327,7 +389,7 @@ void cargarVec(Vector *v, char *nombArch)
     fgets(linea, TAMLINEA, fp); //Salteamos encabezados
     while(fgets(linea, TAMLINEA, fp))
     {
-        sscanf(linea, "%2s;%64[^;];%19[^\r\n]", reg.pais_cod, reg.pais_desc, reg.continente);
+        parsearCont(linea, &reg);
         insertarAlFinal(v,(void*)&reg);
     }
 
@@ -383,7 +445,7 @@ void mostrarVec(Resumen_Continente *vec)
     }
 }
 
-void ProcesarContinentes()
+void procesarContinentes()
 {
     Vector v;
     Resumen_Continente vec[7];
@@ -406,7 +468,7 @@ void ProcesarContinentes()
     fgets(linea, sizeof(linea), pf);
     while(fgets(linea, sizeof(linea), pf))
     {
-        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f", &reg.anio, &reg.trimestre, reg.p.pais_cod, reg.p.pais_desc, reg.operacion, &reg.monto);
+        parsear(linea, &reg);
 
         pais_hallado = buscarPorPaisDesc(&v, reg.p.pais_desc);
 
