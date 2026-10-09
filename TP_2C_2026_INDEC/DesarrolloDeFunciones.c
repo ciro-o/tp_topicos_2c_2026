@@ -257,6 +257,21 @@ void crearVector(Vector *v, size_t tamElem, int cap)
     v->cap = cap;
 }
 
+void inicializarResumen(Resumen_Continente *vec)
+{
+    Resumen_Continente *r;
+    const char *nombres[7] = {"Americas", "Europe", "Oceania", "Asia", "Africa", "Antarctica", "Indeterminado"};
+    int i;
+    for (i = 0; i < 7; i++)
+    {
+        r = vec + i;
+        strcpy(r->continente, *(nombres + i));
+        r->registros = 0;
+        r->total_credito = 0.0;
+        r->total_debito = 0.0;
+    }
+}
+
 void destruirVector(Vector *v)
 {
     free(v->vec);
@@ -290,22 +305,11 @@ void insertarAlFinal(Vector *v, void *elem)
     v->cantElem++;
 }
 
-void vectorRecorrer( const Vector * v, Accion accion)
+void vectorRecorrer(const Vector * v, Accion accion)
 {
     void *ult = v->vec + (v->cantElem-1)*v->tamElem;
     for (void *i = v->vec; i<=ult; i+=v->tamElem)
         accion(i);
-}
-
-void MostrarContinentes(void *elem)
-{
-    Resumen_Continente *reg = (Resumen_Continente *)elem;
-
-    printf("%-15s %12ld %15.2f %15.2f\n",
-           reg->continente,
-           reg->registros,
-           reg->total_credito,
-           reg->total_debito);
 }
 
 void cargarVec(Vector *v, char *nombArch)
@@ -362,9 +366,27 @@ Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continen
     return NULL;
 }
 
+void mostrarVec(Resumen_Continente *vec)
+{
+    Resumen_Continente *inicio;
+    Resumen_Continente *fin = vec + 7;
+
+    printf("%-15s %12s %15s %15s\n", "CONTINENTE", "registros", "total_credito", "total_debito");
+    printf("-------------------------------------------------------------\n");
+    for (inicio = vec; inicio < fin; inicio++)
+    {
+        printf("%-15s %12ld %15.2f %15.2f\n",
+               inicio->continente,
+               inicio->registros,
+               inicio->total_credito,
+               inicio->total_debito);
+    }
+}
+
 void ProcesarContinentes()
 {
     Vector v;
+    Resumen_Continente vec[7];
     FILE *pf = fopen("transferencias_personales_clean.csv", "r");
     if(pf == NULL)
     {
@@ -374,24 +396,33 @@ void ProcesarContinentes()
 
     crearVector(&v,sizeof(P_Continentes),10);
     cargarVec(&v, "paises_continentes.csv");
+    inicializarResumen(vec);
 
     char linea[TAMLINEA];
-    Transferencias *reg;
-    Resumen_Continente vec[7]; //Americas;Europe;Oceania;Asia;Africa;Antartica;Indeterminado;
+    Transferencias reg;
+    P_Continentes *pais_hallado;
+    Resumen_Continente *resumen_hallado;
 
     fgets(linea, sizeof(linea), pf);
     while(fgets(linea, sizeof(linea), pf))
     {
-        sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f",
-               &reg->anio,
-               &reg->trimestre,
-               reg->p.pais_cod,
-               reg->p.pais_desc,
-               reg->operacion,
-               &reg->monto);
+        sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f", &reg.anio, &reg.trimestre, reg.p.pais_cod, reg.p.pais_desc, reg.operacion, &reg.monto);
 
+        pais_hallado = buscarPorPaisDesc(&v, reg.p.pais_desc);
 
+        resumen_hallado = buscarEnResumen(vec, vec + 7, pais_hallado->continente);
+
+        if (resumen_hallado != NULL)
+        {
+            resumen_hallado->registros++;
+            if (*(reg.operacion) == 'C')
+                resumen_hallado->total_credito += reg.monto;
+            else
+                resumen_hallado->total_debito += reg.monto;
+        }
     }
+
+    mostrarVec(vec);
 
     destruirVector(&v);
     fclose(pf);

@@ -89,8 +89,9 @@ void OrdenarPorMonto(Transferencias *t);
 void ProcesarContinentes();
 P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc);
 Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente);
+void inicializarResumen(Resumen_Continente *vec);
 void cargarVec(Vector *v, char *nombArch);
-void MostrarContinentes(void *elem);
+void mostrarVec(Resumen_Continente *vec);
 // Punto 3
 // Punto 4
 // Punto 5
