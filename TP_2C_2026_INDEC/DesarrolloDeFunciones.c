@@ -15,7 +15,7 @@ void MostrarArchivo(Transferencias *t, int* Contador_Registros)
     while(fgets(linea, sizeof(linea), file1))
     {
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f",
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
                &t->anio,
                &t->trimestre,
                t->p.pais_cod,
@@ -327,7 +327,7 @@ void cargarVec(Vector *v, char *nombArch)
     fgets(linea, TAMLINEA, fp); //Salteamos encabezados
     while(fgets(linea, TAMLINEA, fp))
     {
-        sscanf(linea, "%2s;%19[^;];%19[^\r\n]", reg.pais_cod, reg.pais_desc, reg.continente);
+        sscanf(linea, "%2s;%64[^;];%19[^\r\n]", reg.pais_cod, reg.pais_desc, reg.continente);
         insertarAlFinal(v,(void*)&reg);
     }
 
@@ -406,7 +406,7 @@ void ProcesarContinentes()
     fgets(linea, sizeof(linea), pf);
     while(fgets(linea, sizeof(linea), pf))
     {
-        sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f", &reg.anio, &reg.trimestre, reg.p.pais_cod, reg.p.pais_desc, reg.operacion, &reg.monto);
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f", &reg.anio, &reg.trimestre, reg.p.pais_cod, reg.p.pais_desc, reg.operacion, &reg.monto);
 
         pais_hallado = buscarPorPaisDesc(&v, reg.p.pais_desc);
 
