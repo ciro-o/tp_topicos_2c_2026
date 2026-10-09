@@ -153,7 +153,7 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
         }
 
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%19[^;];%1s;%f",
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
                &t[aux].anio,
                &t[aux].trimestre,
                t[aux].p.pais_cod,
@@ -232,7 +232,7 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
     int j;
     for (j = 0; j <= i; j++)
     {
-        printf("País: %s | Nombre Pais: %-19s | Cant. Operaciones: %4ld | Total Credito: %10.2f | Total Debito: %10.2f\n",
+        printf("País: %s | Nombre Pais: %-34s | Cant. Operaciones: %4ld | Total Credito: %10.2f | Total Debito: %10.2f\n",
                rp[j].pais_cod,
                rp[j].pais_desc,
                rp[j].registros,
