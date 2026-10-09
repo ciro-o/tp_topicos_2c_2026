@@ -40,9 +40,7 @@ int main()
         break;
 
     case 2:
-        //printf("opcion %d", opcion);
-        //esta funcion no va aca
-        MostrarArchivoPorPais(&t, 5411);
+        ProcesarContinentes();
         break;
 
     case 3:
