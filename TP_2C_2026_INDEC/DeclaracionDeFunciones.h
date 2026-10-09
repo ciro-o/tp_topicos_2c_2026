@@ -64,6 +64,8 @@ typedef struct
 
 //--------- Funciones ----------
 typedef void (*Accion)(void*);
+void parsearCont(char *linea, P_Continentes *reg);
+void parsear(char *linea, Transferencias *reg);
 
 //TDA Vector.
 void crearVector(Vector *v, size_t tamElem, int cap);
@@ -86,7 +88,7 @@ void ImporteCreditoPorPais(Transferencias *t);
 void OrdenarPorMonto(Transferencias *t);
 
 // Punto 2
-void ProcesarContinentes();
+void procesarContinentes();
 P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc);
 Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente);
 void inicializarResumen(Resumen_Continente *vec);
