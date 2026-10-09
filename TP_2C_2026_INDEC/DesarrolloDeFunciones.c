@@ -106,11 +106,11 @@ void MostrarArchivoPorPais(Transferencias *t, int cont)
     fclose(salida);
 
     //printeo ordenado
-    for (reg = puntero; reg < puntero + aux; reg++)
+    /* for (reg = puntero; reg < puntero + aux; reg++)
     {
         printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
                reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
-    }
+    } */
     free(puntero);
     fclose(file1);
 
@@ -232,7 +232,7 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
     int j;
     for (j = 0; j <= i; j++)
     {
-        printf("País: %s | Nombre Pais: %s \t\t| Cant. Operaciones: %ld | Total Credito: %.2f | Total Debito: %.2f\n",
+        printf("País: %s | Nombre Pais: %-19s | Cant. Operaciones: %4ld | Total Credito: %10.2f | Total Debito: %10.2f\n",
                rp[j].pais_cod,
                rp[j].pais_desc,
                rp[j].registros,
@@ -241,6 +241,12 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
     }
 
     free(rp);
+}
+
+void ImporteDebitoPorPais(Transferencias *t){
+
+
+
 }
 
 void crearVector(Vector *v, size_t tamElem, int cap)

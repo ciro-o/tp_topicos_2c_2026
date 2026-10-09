@@ -34,9 +34,8 @@ int main()
     switch (opcion)
     {
     case 1:
-        //printf("opcion %d", opcion);
-        //esta funcion no va aca
-        MostrarArchivo(&t, Contador_Registros);
+        MostrarArchivoPorPais(&t, 5411);
+        MostrarCantOperacionesPorPais(&t, &rp);
         break;
 
     case 2:
@@ -44,9 +43,7 @@ int main()
         break;
 
     case 3:
-        //printf("opcion %d", opcion);
-        //no va aca
-        MostrarCantOperacionesPorPais(&t, &rp);
+        
         break;
 
     case 4:
