@@ -26,7 +26,9 @@ int main()
         "7. Generación del archivo intermedio transferencias_base_larga.csv.\n"
         "8. Promedio trimestral por país.\n"
         "9. Promedio trimestral por continente, operación y año.\n"
-        "10. Salir.\n");
+        "10. Salir.\n"
+        "11. Importe debito por pais.\n"
+        "12. Importe credito por pais.\n");
 
     printf("Elija una opcíon: ");
     scanf("%d", &opcion);
@@ -39,7 +41,7 @@ int main()
         break;
 
     case 2:
-        procesarContinentes();
+        //procesarContinentes();
         break;
 
     case 3:
@@ -72,6 +74,14 @@ int main()
 
     case 10:
         //printf("opcion %d", opcion);
+        break;
+    case 11:
+        //printf("opcion %d", opcion);
+        ImporteDebitoPorPais(&t, &rp);
+        break;
+    case 12:
+        //printf("opcion %d", opcion);
+        ImporteCreditoPorPais(&t, &rp);
         break;
     }
 

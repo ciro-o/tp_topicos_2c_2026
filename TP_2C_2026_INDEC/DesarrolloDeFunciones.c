@@ -1,67 +1,5 @@
 #include "DeclaracionDeFunciones.h"
 
-void parsear(char *linea, Transferencias *reg)
-{
-    char *act;
-
-    act = strchr(linea, '\n');
-    if (act)
-        *act = '\0';
-    act = strchr(linea, '\r');
-    if (act)
-        *act = '\0';
-
-    act = strrchr(linea, ';');
-    sscanf(act + 1, "%f", &reg->monto);
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    *reg->operacion = *(act + 1);
-    *(reg->operacion + 1) = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    strncpy(reg->p.pais_desc, act + 1, sizeof(reg->p.pais_desc) - 1);
-    reg->p.pais_desc[sizeof(reg->p.pais_desc) - 1] = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    strncpy(reg->p.pais_cod, act + 1, sizeof(reg->p.pais_cod) - 1);
-    reg->p.pais_cod[sizeof(reg->p.pais_cod) - 1] = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    sscanf(act + 1, "%d", &reg->trimestre);
-    *act = '\0';
-
-    sscanf(linea, "%d", &reg->anio);
-}
-
-void parsearCont(char *linea, P_Continentes *reg)
-{
-    char *act;
-
-    act = strchr(linea, '\n');
-    if (act)
-        *act = '\0';
-    act = strchr(linea, '\r');
-    if (act)
-        *act = '\0';
-
-    act = strrchr(linea, ';');
-    strncpy(reg->continente, act + 1, sizeof(reg->continente) - 1);
-    *(reg->continente + sizeof(reg->continente) - 1) = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    strncpy(reg->pais_desc, act + 1, sizeof(reg->pais_desc) - 1);
-    *(reg->pais_desc + sizeof(reg->pais_desc) - 1) = '\0';
-    *act = '\0';
-
-    strncpy(reg->pais_cod, linea, sizeof(reg->pais_cod) - 1);
-    *(reg->pais_cod + sizeof(reg->pais_cod) - 1) = '\0';
-}
-
 void MostrarArchivo(Transferencias *t, int* Contador_Registros)
 {
 
@@ -305,9 +243,257 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
     free(rp);
 }
 
-void ImporteDebitoPorPais(Transferencias *t){
+void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp){
 
+    FILE * file1;
+    file1 = fopen("paises_ordenado.txt", "r");
+    if(file1 == NULL)
+    {
+        printf("Archivo corrupto");
+        return;
+    }
+    t = malloc(sizeof(Transferencias));
+    if(t == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
 
+    //Aca tengo el archivo en vector
+    int aux = 0;
+    int capacidad = 1;
+    char linea[256];
+    fgets(linea, sizeof(linea), file1);
+    while(fgets(linea, sizeof(linea), file1))
+    {
+        //realloc si esta lleno
+        if(aux == capacidad)
+        {
+            capacidad++;
+            t = realloc(t, sizeof(Transferencias) * capacidad);
+            if(t == NULL)
+            {
+                printf("No hay memoria");
+                return;
+            }
+        }
+
+        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
+               &t[aux].anio,
+               &t[aux].trimestre,
+               t[aux].p.pais_cod,
+               t[aux].p.pais_desc,
+               t[aux].operacion,
+               &t[aux].monto);
+
+        aux++;
+    }
+    // ahora vuelvo a rp
+    rp = malloc(sizeof(Resumen_Pais));
+    if(rp == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    int cap = 1;
+    int i=0;
+    int estatico =0;
+    int k=0;
+    //---- primer registro todo cero -----
+    strcpy(rp[0].pais_cod, t[0].p.pais_cod);
+    strcpy(rp[0].pais_desc, t[0].p.pais_desc);
+    rp[0].registros = 0;
+    rp[0].total_credito = 0;
+    rp[0].total_debito = 0;
+    //----- recorro los registros -----
+    for(k=0; k<aux; k++)
+    {
+        if(strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
+        {
+            //Vacio, sumo afuera
+        }
+        else
+        {
+
+            i++;
+            estatico = k;
+
+            if(i == cap)
+            {
+                cap++;
+                rp = realloc(rp, sizeof(Resumen_Pais) * cap);
+                if(rp == NULL)
+                {
+                    printf("No hay memoria");
+                    return;
+                }
+            }
+
+            strcpy(rp[i].pais_cod, t[estatico].p.pais_cod);
+            strcpy(rp[i].pais_desc, t[estatico].p.pais_desc);
+            rp[i].registros = 0;
+            rp[i].total_credito = 0;
+            rp[i].total_debito = 0;
+
+        }
+
+        rp[i].registros = rp[i].registros + 1;
+        if(t[k].operacion[0] == 'C')
+        {
+            rp[i].total_credito += t[k].monto;
+        };
+        if(t[k].operacion[0] == 'D')
+        {
+            rp[i].total_debito += t[k].monto;
+        };
+
+    }
+
+    fclose(file1);
+    free(t);
+
+    //imprimo el vector
+    int j;
+    for (j = 0; j <= i; j++)
+    {
+        printf("País: %s | Nombre Pais: %-34s | Total Debito: %10.2f\n",
+               rp[j].pais_cod,
+               rp[j].pais_desc,
+               rp[j].total_debito);
+    }
+
+    free(rp);
+}
+
+void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp){
+
+    FILE * file1;
+    file1 = fopen("paises_ordenado.txt", "r");
+    if(file1 == NULL)
+    {
+        printf("Archivo corrupto");
+        return;
+    }
+    t = malloc(sizeof(Transferencias));
+    if(t == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    //Aca tengo el archivo en vector
+    int aux = 0;
+    int capacidad = 1;
+    char linea[256];
+    fgets(linea, sizeof(linea), file1);
+    while(fgets(linea, sizeof(linea), file1))
+    {
+        //realloc si esta lleno
+        if(aux == capacidad)
+        {
+            capacidad++;
+            t = realloc(t, sizeof(Transferencias) * capacidad);
+            if(t == NULL)
+            {
+                printf("No hay memoria");
+                return;
+            }
+        }
+
+        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
+               &t[aux].anio,
+               &t[aux].trimestre,
+               t[aux].p.pais_cod,
+               t[aux].p.pais_desc,
+               t[aux].operacion,
+               &t[aux].monto);
+
+        aux++;
+    }
+    // ahora vuelvo a rp
+    rp = malloc(sizeof(Resumen_Pais));
+    if(rp == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    int cap = 1;
+    int i=0;
+    int estatico =0;
+    int k=0;
+    //---- primer registro todo cero -----
+    strcpy(rp[0].pais_cod, t[0].p.pais_cod);
+    strcpy(rp[0].pais_desc, t[0].p.pais_desc);
+    rp[0].registros = 0;
+    rp[0].total_credito = 0;
+    rp[0].total_debito = 0;
+    //----- recorro los registros -----
+    for(k=0; k<aux; k++)
+    {
+        if(strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
+        {
+            //Vacio, sumo afuera
+        }
+        else
+        {
+
+            i++;
+            estatico = k;
+
+            if(i == cap)
+            {
+                cap++;
+                rp = realloc(rp, sizeof(Resumen_Pais) * cap);
+                if(rp == NULL)
+                {
+                    printf("No hay memoria");
+                    return;
+                }
+            }
+
+            strcpy(rp[i].pais_cod, t[estatico].p.pais_cod);
+            strcpy(rp[i].pais_desc, t[estatico].p.pais_desc);
+            rp[i].registros = 0;
+            rp[i].total_credito = 0;
+            rp[i].total_debito = 0;
+
+        }
+
+        rp[i].registros = rp[i].registros + 1;
+        if(t[k].operacion[0] == 'C')
+        {
+            rp[i].total_credito += t[k].monto;
+        };
+        if(t[k].operacion[0] == 'D')
+        {
+            rp[i].total_debito += t[k].monto;
+        };
+
+    }
+
+    fclose(file1);
+    free(t);
+
+    //imprimo el vector
+    int j;
+    for (j = 0; j <= i; j++)
+    {
+        printf("País: %s | Nombre Pais: %-34s | Total Credito: %10.2f\n",
+               rp[j].pais_cod,
+               rp[j].pais_desc,
+               rp[j].total_credito);
+    }
+
+    free(rp);
+}
+
+void OrdenarPorMonto(Transferencias *t){
+
+    
 
 }
 
@@ -395,7 +581,7 @@ void cargarVec(Vector *v, char *nombArch)
     fgets(linea, TAMLINEA, fp); //Salteamos encabezados
     while(fgets(linea, TAMLINEA, fp))
     {
-        parsearCont(linea, &reg);
+        sscanf(linea, "%2s;%64[^;];%19[^\r\n]", reg.pais_cod, reg.pais_desc, reg.continente);
         insertarAlFinal(v,(void*)&reg);
     }
 
@@ -451,7 +637,7 @@ void mostrarVec(Resumen_Continente *vec)
     }
 }
 
-void procesarContinentes()
+void ProcesarContinentes()
 {
     Vector v;
     Resumen_Continente vec[7];
@@ -474,7 +660,7 @@ void procesarContinentes()
     fgets(linea, sizeof(linea), pf);
     while(fgets(linea, sizeof(linea), pf))
     {
-        parsear(linea, &reg);
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f", &reg.anio, &reg.trimestre, reg.p.pais_cod, reg.p.pais_desc, reg.operacion, &reg.monto);
 
         pais_hallado = buscarPorPaisDesc(&v, reg.p.pais_desc);
 
