@@ -39,7 +39,7 @@ int main()
         break;
 
     case 2:
-        ProcesarContinentes();
+        procesarContinentes();
         break;
 
     case 3:
