@@ -41,11 +41,11 @@ int main()
         break;
 
     case 2:
-        //procesarContinentes();
+        procesarContinentes();
         break;
 
     case 3:
-        
+
         break;
 
     case 4:
