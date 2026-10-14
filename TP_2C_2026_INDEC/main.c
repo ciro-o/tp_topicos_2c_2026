@@ -10,6 +10,7 @@ int main()
     //UTILS
     Transferencias t;
     Resumen_Pais rp;
+    OrdenMonto m;
     int cont = 0;
     int *Contador_Registros = &cont; //almacena la cantidad de registros del archivo de operaciones se usa en MostrarArchivo();
 
@@ -28,7 +29,8 @@ int main()
         "9. Promedio trimestral por continente, operación y año.\n"
         "10. Salir.\n"
         "11. Importe debito por pais.\n"
-        "12. Importe credito por pais.\n");
+        "12. Importe credito por pais.\n"
+        "13. Orden por Monto.\n");
 
     printf("Elija una opcíon: ");
     scanf("%d", &opcion);
@@ -82,6 +84,10 @@ int main()
     case 12:
         //printf("opcion %d", opcion);
         ImporteCreditoPorPais(&t, &rp);
+        break;
+    case 13:
+        //printf("opcion %d", opcion);
+        OrdenarPorMonto(&t, &m);
         break;
     }
 

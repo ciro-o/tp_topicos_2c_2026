@@ -62,6 +62,12 @@ typedef struct
     double total_debito;
 } Resumen_Pais;
 
+typedef struct {
+    char pais_cod[3];
+    char pais_desc[64];
+    float monto;
+} OrdenMonto;
+
 //--------- Funciones ----------
 typedef void (*Accion)(void*);
 void parsearCont(char *linea, P_Continentes *reg);
@@ -85,7 +91,7 @@ void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp);
 //5) Sumar el importe de todas las operaciones Credito (por código de país capaz) (vector dinamico)
 void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp);
 //6) Ordenar de mayor a menor según la columna monto
-void OrdenarPorMonto(Transferencias *t);
+void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
 // Punto 2
 void procesarContinentes();

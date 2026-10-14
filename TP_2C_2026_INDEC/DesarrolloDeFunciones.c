@@ -38,12 +38,13 @@ void MostrarArchivoPorPais(Transferencias *t, int cont)
 {
 
     //malloc
-    Transferencias *puntero;
+    //Transferencias *t;
     Transferencias temp;
+    Transferencias *reg;
 
     // Este es para leer todo el documento
-    puntero = malloc(sizeof(Transferencias) * cont);
-    if(puntero == NULL)
+    t = malloc(sizeof(Transferencias) * cont);
+    if(t == NULL)
     {
         printf("No hay memoria");
         return;
@@ -63,21 +64,21 @@ void MostrarArchivoPorPais(Transferencias *t, int cont)
     {
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
         sscanf(linea, "%d;%d;%2s;%30[^;];%1s;%f",
-               &puntero[aux].anio,
-               &puntero[aux].trimestre,
-               puntero[aux].p.pais_cod,
-               puntero[aux].p.pais_desc,
-               puntero[aux].operacion,
-               &puntero[aux].monto);
+               &t[aux].anio,
+               &t[aux].trimestre,
+               t[aux].p.pais_cod,
+               t[aux].p.pais_desc,
+               t[aux].operacion,
+               &t[aux].monto);
 
         aux++;
     }
-    Transferencias *reg;
+
     int k;
     //ordenamiento
     for (k = 0; k < aux - 1; k++)
     {
-        for (reg = puntero + 1; reg < puntero + aux; reg++)
+        for (reg = t + 1; reg < t + aux; reg++)
         {
             if (strcmp((reg-1)->p.pais_cod, reg->p.pais_cod) > 0)
             {
@@ -97,7 +98,7 @@ void MostrarArchivoPorPais(Transferencias *t, int cont)
 
     //Escritura de archivo
 
-    for (reg = puntero; reg < puntero + aux; reg++)
+    for (reg = t; reg < t + aux; reg++)
     {
         fprintf(salida, "%d;%d;%s;%s;%s;%.2f\n",
                 reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
@@ -111,7 +112,7 @@ void MostrarArchivoPorPais(Transferencias *t, int cont)
         printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
                reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
     } */
-    free(puntero);
+    free(t);
     fclose(file1);
 
 }
@@ -163,6 +164,9 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
 
         aux++;
     }
+
+    //creo el arch de todos los paises y sus montos
+
     // ahora vuelvo a rp
     rp = malloc(sizeof(Resumen_Pais));
     if(rp == NULL)
@@ -227,6 +231,8 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
 
     fclose(file1);
     free(t);
+
+    
 
     //imprimo el vector
     int j;
@@ -491,9 +497,129 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp){
     free(rp);
 }
 
-void OrdenarPorMonto(Transferencias *t){
+void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
 
-    
+    //aca tengo el archivo en el vector
+    FILE * file1;
+    file1 = fopen("paises_ordenado.txt", "r");
+    if(file1 == NULL)
+    {
+        printf("Archivo corrupto");
+        return;
+    }
+    t = malloc(sizeof(Transferencias));
+    if(t == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    //Aca tengo el archivo en vector
+    int aux = 0;
+    int capacidad = 1;
+    char linea[256];
+    fgets(linea, sizeof(linea), file1);
+    while(fgets(linea, sizeof(linea), file1))
+    {
+        //realloc si esta lleno
+        if(aux == capacidad)
+        {
+            capacidad++;
+            t = realloc(t, sizeof(Transferencias) * capacidad);
+            if(t == NULL)
+            {
+                printf("No hay memoria");
+                return;
+            }
+        }
+
+        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
+               &t[aux].anio,
+               &t[aux].trimestre,
+               t[aux].p.pais_cod,
+               t[aux].p.pais_desc,
+               t[aux].operacion,
+               &t[aux].monto);
+
+        aux++;
+    }
+
+    //ahora tengo que contar los montos por vector de cada pais, comparando el code pais
+
+    m = malloc(sizeof(OrdenMonto));
+    capacidad = 1;
+
+    int i=0;
+    int estatico =0;
+    int k=0;
+    //---- primer registro todo cero -----
+    strcpy(m[0].pais_cod, t[0].p.pais_cod);
+    strcpy(m[0].pais_desc, t[0].p.pais_desc);
+    m[0].monto = 0;
+    //----- recorro los registros -----
+    for(k=0; k<aux; k++)
+    {
+        if(strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
+        {
+            //Vacio, sumo afuera
+        }
+        else
+        {
+            i++;
+            estatico = k;
+            if(i == capacidad)
+            {
+                capacidad++;
+                m = realloc(m, sizeof(OrdenMonto) * capacidad);
+                if(m == NULL)
+                {
+                    printf("No hay memoria");
+                    return;
+                }
+            }
+            strcpy(m[i].pais_cod, t[estatico].p.pais_cod);
+            strcpy(m[i].pais_desc, t[estatico].p.pais_desc);
+            m[i].monto = 0;
+
+        }
+        if(t[k].operacion[0] == 'C')
+        {
+            m[i].monto += t[k].monto;
+        };
+        if(t[k].operacion[0] == 'D')
+        {
+            m[i].monto += t[k].monto;
+        };
+
+    }
+
+
+    //despues ordeno el vector
+    OrdenMonto maux;
+    for(k=0; k < capacidad; k++){
+       for(i=0; i < capacidad -1 ; i++){
+        if(m[i].monto < m[i+1].monto){
+            maux = m[i+1];
+            m[i+1] = m[i];
+            m[i] = maux; 
+            }
+        }
+    }
+
+    //por ultimo imprimo el vector ordenado
+
+    //imprimo el vector
+    int j;
+    for (j = 0; j <= i; j++)
+    {
+        printf("País: %s | Nombre Pais: %-34s | Total Monto: %10.2f\n",
+               m[j].pais_cod,
+               m[j].pais_desc,
+               m[j].monto);
+    }
+
+
 
 }
 
@@ -681,3 +807,5 @@ void ProcesarContinentes()
     destruirVector(&v);
     fclose(pf);
 }
+
+
