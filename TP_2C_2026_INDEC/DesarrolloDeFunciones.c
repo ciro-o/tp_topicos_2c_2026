@@ -1,5 +1,6 @@
 #include "DeclaracionDeFunciones.h"
 
+
 void MostrarArchivo(Transferencias *t, int* Contador_Registros)
 {
 
@@ -34,8 +35,8 @@ void MostrarArchivo(Transferencias *t, int* Contador_Registros)
     fclose(file1);
 }
 
-void MostrarArchivoPorPais(Transferencias *t, int cont)
-{
+//arreglar ya que el cont esta hardcodeado
+void MostrarArchivoPorPais(Transferencias *t, int cont){
 
     //malloc
     //Transferencias *t;
@@ -63,7 +64,7 @@ void MostrarArchivoPorPais(Transferencias *t, int cont)
     while(fgets(linea, sizeof(linea), file1))
     {
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%30[^;];%1s;%f",
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
                &t[aux].anio,
                &t[aux].trimestre,
                t[aux].p.pais_cod,
@@ -117,7 +118,7 @@ void MostrarArchivoPorPais(Transferencias *t, int cont)
 
 }
 
-void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
+void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp)
 {
 
     FILE * file1;
@@ -168,8 +169,8 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
     //creo el arch de todos los paises y sus montos
 
     // ahora vuelvo a rp
-    rp = malloc(sizeof(Resumen_Pais));
-    if(rp == NULL)
+    *rp = malloc(sizeof(Resumen_Pais));
+    if(*rp == NULL)
     {
         printf("No hay memoria");
         return;
@@ -180,11 +181,11 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
     int estatico =0;
     int k=0;
     //---- primer registro todo cero -----
-    strcpy(rp[0].pais_cod, t[0].p.pais_cod);
-    strcpy(rp[0].pais_desc, t[0].p.pais_desc);
-    rp[0].registros = 0;
-    rp[0].total_credito = 0;
-    rp[0].total_debito = 0;
+    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
+    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
+    (*rp)[0].registros = 0;
+    (*rp)[0].total_credito = 0;
+    (*rp)[0].total_debito = 0;
     //----- recorro los registros -----
     for(k=0; k<aux; k++)
     {
@@ -201,30 +202,30 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
             if(i == cap)
             {
                 cap++;
-                rp = realloc(rp, sizeof(Resumen_Pais) * cap);
-                if(rp == NULL)
+                *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
+                if(*rp == NULL)
                 {
                     printf("No hay memoria");
                     return;
                 }
             }
 
-            strcpy(rp[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy(rp[i].pais_desc, t[estatico].p.pais_desc);
-            rp[i].registros = 0;
-            rp[i].total_credito = 0;
-            rp[i].total_debito = 0;
+            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
+            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
+            (*rp)[i].registros = 0;
+            (*rp)[i].total_credito = 0;
+            (*rp)[i].total_debito = 0;
 
         }
 
-        rp[i].registros = rp[i].registros + 1;
+        (*rp)[i].registros = (*rp)[i].registros + 1;
         if(t[k].operacion[0] == 'C')
         {
-            rp[i].total_credito += t[k].monto;
+            (*rp)[i].total_credito += t[k].monto;
         };
         if(t[k].operacion[0] == 'D')
         {
-            rp[i].total_debito += t[k].monto;
+            (*rp)[i].total_debito += t[k].monto;
         };
 
     }
@@ -239,17 +240,17 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp)
     for (j = 0; j <= i; j++)
     {
         printf("País: %s | Nombre Pais: %-34s | Cant. Operaciones: %4ld | Total Credito: %10.2f | Total Debito: %10.2f\n",
-               rp[j].pais_cod,
-               rp[j].pais_desc,
-               rp[j].registros,
-               rp[j].total_credito,
-               rp[j].total_debito);
+               (*rp)[j].pais_cod,
+               (*rp)[j].pais_desc,
+               (*rp)[j].registros,
+               (*rp)[j].total_credito,
+               (*rp)[j].total_debito);
     }
 
-    free(rp);
+    free(*rp);
 }
 
-void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp){
+void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais **rp){
 
     FILE * file1;
     file1 = fopen("paises_ordenado.txt", "r");
@@ -296,8 +297,8 @@ void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp){
         aux++;
     }
     // ahora vuelvo a rp
-    rp = malloc(sizeof(Resumen_Pais));
-    if(rp == NULL)
+    *rp = malloc(sizeof(Resumen_Pais));
+    if(*rp == NULL)
     {
         printf("No hay memoria");
         return;
@@ -308,11 +309,11 @@ void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp){
     int estatico =0;
     int k=0;
     //---- primer registro todo cero -----
-    strcpy(rp[0].pais_cod, t[0].p.pais_cod);
-    strcpy(rp[0].pais_desc, t[0].p.pais_desc);
-    rp[0].registros = 0;
-    rp[0].total_credito = 0;
-    rp[0].total_debito = 0;
+    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
+    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
+    (*rp)[0].registros = 0;
+    (*rp)[0].total_credito = 0;
+    (*rp)[0].total_debito = 0;
     //----- recorro los registros -----
     for(k=0; k<aux; k++)
     {
@@ -329,30 +330,30 @@ void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp){
             if(i == cap)
             {
                 cap++;
-                rp = realloc(rp, sizeof(Resumen_Pais) * cap);
-                if(rp == NULL)
+                *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
+                if(*rp == NULL)
                 {
                     printf("No hay memoria");
                     return;
                 }
             }
 
-            strcpy(rp[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy(rp[i].pais_desc, t[estatico].p.pais_desc);
-            rp[i].registros = 0;
-            rp[i].total_credito = 0;
-            rp[i].total_debito = 0;
+            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
+            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
+            (*rp)[i].registros = 0;
+            (*rp)[i].total_credito = 0;
+            (*rp)[i].total_debito = 0;
 
         }
 
-        rp[i].registros = rp[i].registros + 1;
+        (*rp)[i].registros = (*rp)[i].registros + 1;
         if(t[k].operacion[0] == 'C')
         {
-            rp[i].total_credito += t[k].monto;
+            (*rp)[i].total_credito += t[k].monto;
         };
         if(t[k].operacion[0] == 'D')
         {
-            rp[i].total_debito += t[k].monto;
+            (*rp)[i].total_debito += t[k].monto;
         };
 
     }
@@ -365,15 +366,15 @@ void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp){
     for (j = 0; j <= i; j++)
     {
         printf("País: %s | Nombre Pais: %-34s | Total Debito: %10.2f\n",
-               rp[j].pais_cod,
-               rp[j].pais_desc,
-               rp[j].total_debito);
+               (*rp)[j].pais_cod,
+               (*rp)[j].pais_desc,
+               (*rp)[j].total_debito);
     }
 
-    free(rp);
+    free(*rp);
 }
 
-void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp){
+void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais **rp){
 
     FILE * file1;
     file1 = fopen("paises_ordenado.txt", "r");
@@ -420,8 +421,8 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp){
         aux++;
     }
     // ahora vuelvo a rp
-    rp = malloc(sizeof(Resumen_Pais));
-    if(rp == NULL)
+    *rp = malloc(sizeof(Resumen_Pais));
+    if(*rp == NULL)
     {
         printf("No hay memoria");
         return;
@@ -432,11 +433,11 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp){
     int estatico =0;
     int k=0;
     //---- primer registro todo cero -----
-    strcpy(rp[0].pais_cod, t[0].p.pais_cod);
-    strcpy(rp[0].pais_desc, t[0].p.pais_desc);
-    rp[0].registros = 0;
-    rp[0].total_credito = 0;
-    rp[0].total_debito = 0;
+    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
+    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
+    (*rp)[0].registros = 0;
+    (*rp)[0].total_credito = 0;
+    (*rp)[0].total_debito = 0;
     //----- recorro los registros -----
     for(k=0; k<aux; k++)
     {
@@ -453,30 +454,30 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp){
             if(i == cap)
             {
                 cap++;
-                rp = realloc(rp, sizeof(Resumen_Pais) * cap);
-                if(rp == NULL)
+                *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
+                if(*rp == NULL)
                 {
                     printf("No hay memoria");
                     return;
                 }
             }
 
-            strcpy(rp[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy(rp[i].pais_desc, t[estatico].p.pais_desc);
-            rp[i].registros = 0;
-            rp[i].total_credito = 0;
-            rp[i].total_debito = 0;
+            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
+            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
+            (*rp)[i].registros = 0;
+            (*rp)[i].total_credito = 0;
+            (*rp)[i].total_debito = 0;
 
         }
 
-        rp[i].registros = rp[i].registros + 1;
+        (*rp)[i].registros = (*rp)[i].registros + 1;
         if(t[k].operacion[0] == 'C')
         {
-            rp[i].total_credito += t[k].monto;
+            (*rp)[i].total_credito += t[k].monto;
         };
         if(t[k].operacion[0] == 'D')
         {
-            rp[i].total_debito += t[k].monto;
+            (*rp)[i].total_debito += t[k].monto;
         };
 
     }
@@ -489,12 +490,12 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp){
     for (j = 0; j <= i; j++)
     {
         printf("País: %s | Nombre Pais: %-34s | Total Credito: %10.2f\n",
-               rp[j].pais_cod,
-               rp[j].pais_desc,
-               rp[j].total_credito);
+               (*rp)[j].pais_cod,
+               (*rp)[j].pais_desc,
+               (*rp)[j].total_credito);
     }
 
-    free(rp);
+    free(*rp);
 }
 
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
@@ -871,4 +872,203 @@ void procesarContinentes()
     fclose(pf);
 }
 
+void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises){
 
+    //tengo todo el archivo leido en un vector
+    FILE * file1;
+    file1 = fopen("transferencias_personales_clean.csv", "r");
+    if(file1 == NULL)
+    {
+        printf("Archivo corrupto");
+        return;
+    }
+    t = malloc(sizeof(Transferencias));
+    if(t == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    //Aca tengo el archivo en vector
+    int aux = 0;
+    int capacidad = 1;
+    char linea[256];
+    fgets(linea, sizeof(linea), file1);
+    while(fgets(linea, sizeof(linea), file1))
+    {
+        //realloc si esta lleno
+        if(aux == capacidad)
+        {
+            capacidad++;
+            t = realloc(t, sizeof(Transferencias) * capacidad);
+            if(t == NULL)
+            {
+                printf("No hay memoria");
+                return;
+            }
+        }
+
+        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
+               &t[aux].anio,
+               &t[aux].trimestre,
+               t[aux].p.pais_cod,
+               t[aux].p.pais_desc,
+               t[aux].operacion,
+               &t[aux].monto);
+
+        aux++;
+    }
+    //TERMINA: tengo todo el archivo leido en un vector
+
+    //ordeno todo el archivo por pais, registro, credito y debito
+    Transferencias *reg, temp;
+    for (int k = 0; k < aux - 1; k++)
+    {
+        for (reg = t + 1; reg < t + aux; reg++)
+        {
+            if (strcmp((reg-1)->p.pais_cod, reg->p.pais_cod) > 0)
+            {
+                temp = *reg;
+                *reg = *(reg-1);
+                *(reg-1) = temp;
+            }
+        }
+    }
+
+    //indexo todo el vec por paises
+    *rp = malloc(sizeof(Resumen_Pais));
+    if(*rp == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    int cap = 1;
+    int i=0;
+    int estatico =0;
+    int k=0;
+    //---- primer registro todo cero -----
+    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
+    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
+    (*rp)[0].registros = 0;
+    (*rp)[0].total_credito = 0;
+    (*rp)[0].total_debito = 0;
+    //----- recorro los registros -----
+    for(k=0; k<aux; k++)
+    {
+        if(strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
+        {
+            //Vacio, sumo afuera
+        }
+        else
+        {
+
+            i++;
+            estatico = k;
+
+            if(i == cap)
+            {
+                cap++;
+                *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
+                if(*rp == NULL)
+                {
+                    printf("No hay memoria");
+                    return;
+                }
+            }
+
+            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
+            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
+            (*rp)[i].registros = 0;
+            (*rp)[i].total_credito = 0;
+            (*rp)[i].total_debito = 0;
+
+        }
+
+        (*rp)[i].registros = (*rp)[i].registros + 1;
+        if(t[k].operacion[0] == 'C')
+        {
+            (*rp)[i].total_credito += t[k].monto;
+        };
+        if(t[k].operacion[0] == 'D')
+        {
+            (*rp)[i].total_debito += t[k].monto;
+        };
+
+    }
+    *contPaises = i +1;
+    //TERMINA
+
+    //Pregunto por cantidad de paises y tiro un for validando
+    int cantPaises;
+    char tipoOperacion;
+    printf("Elija la cantidad de paises: ");
+    scanf("%d", &cantPaises);
+    printf("Elija el tipo de Operacion: ");
+    scanf(" %c", &tipoOperacion);
+    if(cantPaises < 1 || cantPaises > *contPaises){
+        printf("Reingrese la cantidad de paises: ");
+        scanf("%d", &cantPaises);
+    }
+    if(tipoOperacion != 'c' && tipoOperacion != 'C' && tipoOperacion != 'd' && tipoOperacion != 'D' ){
+        printf("Reingrese el tipo de Operacion: ");
+        scanf(" %c", &tipoOperacion);
+    }
+
+    if(tipoOperacion == 'c' || tipoOperacion == 'C'){
+      //ordeno por monto credito
+        Resumen_Pais Raux;
+    for(k=0; k < *contPaises; k++){
+       for(i=0; i < *contPaises -1 ; i++){
+        if((*rp)[i].total_credito < (*rp)[i+1].total_credito){
+            Raux = (*rp)[i+1];
+            (*rp)[i+1] = (*rp)[i];
+            (*rp)[i] = Raux; 
+            }
+        }
+    }
+        //imprimo el vector
+    int j;
+    for (j = 0; j <= cantPaises; j++)
+    {
+        printf("Top %d | País: %s | Nombre Pais: %-34s | Cant. Operaciones: %4ld | Total Credito: %10.2f\n",
+               j+1,
+                (*rp)[j].pais_cod,
+               (*rp)[j].pais_desc,
+               (*rp)[j].registros,
+               (*rp)[j].total_credito);
+    }
+    }
+
+    if(tipoOperacion =='d' || tipoOperacion == 'D'){
+        //ordeno por monto credito
+        Resumen_Pais Raux;
+    for(k=0; k < *contPaises; k++){
+       for(i=0; i < *contPaises -1 ; i++){
+        if((*rp)[i].total_debito < (*rp)[i+1].total_debito){
+            Raux = (*rp)[i+1];
+            (*rp)[i+1] = (*rp)[i];
+            (*rp)[i] = Raux; 
+            }
+        }
+    }
+        //imprimo el vector
+    int j;
+    for (j = 0; j < cantPaises; j++)
+    {
+        printf("Top %d | País: %s | Nombre Pais: %-34s | Cant. Operaciones: %4ld | Total Debito: %10.2f\n",
+                j+1,
+                (*rp)[j].pais_cod,
+               (*rp)[j].pais_desc,
+               (*rp)[j].registros,
+               (*rp)[j].total_debito);
+    }
+    }
+
+    fclose(file1);
+    free(*rp);
+    free(t);
+
+
+}

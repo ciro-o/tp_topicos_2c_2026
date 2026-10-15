@@ -85,11 +85,11 @@ void MostrarArchivo(Transferencias *t, int *);
 //2) Agrupar información por pais (por código de país capaz) (vector dinamico)
 void MostrarArchivoPorPais(Transferencias *t, int );
 //3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
-void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais *rp);
+void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp);
 //4) Sumar el importe de todas las operaciones Debito (por código de país capaz) (vector dinamico)
-void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais *rp);
+void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais **rp);
 //5) Sumar el importe de todas las operaciones Credito (por código de país capaz) (vector dinamico)
-void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais *rp);
+void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais **rp);
 //6) Ordenar de mayor a menor según la columna monto
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
@@ -103,6 +103,7 @@ void mostrarVec(Resumen_Continente *vec);
 // Punto 3
 // Punto 4
 // Punto 5
+void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *cantPaises);
 // Punto 6
 // Punto 7
 // Punto 8

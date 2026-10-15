@@ -9,9 +9,10 @@ int main()
 
     //UTILS
     Transferencias t;
-    Resumen_Pais rp;
+    Resumen_Pais *rp = NULL;
     OrdenMonto m;
     int cont = 0;
+    int contPaises;
     int *Contador_Registros = &cont; //almacena la cantidad de registros del archivo de operaciones se usa en MostrarArchivo();
 
     //FIN UTILS
@@ -56,6 +57,7 @@ int main()
 
     case 5:
         //printf("opcion %d", opcion);
+        Ranking_pais(&t, &rp, &contPaises);
         break;
 
     case 6:
