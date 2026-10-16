@@ -1072,3 +1072,147 @@ void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises){
 
 
 }
+
+void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_Arch *inter){
+
+    int capacidad1 = 1;
+    int capacidad2 = 1;
+    int capacidad3 = 1;
+    int aux = 0;
+    int k = 0;
+    int j = 0;
+    int i = 0;
+
+
+    FILE * file1;
+    file1 = fopen("transferencias_personales_clean.csv", "r");
+    if(file1 == NULL){
+        printf("Archivo corrupto");
+        return;
+    }
+    FILE * file2;
+    file2 = fopen("paises_continentes.csv", "r");
+    if(file2 == NULL){
+        printf("Archivo corrupto");
+        return;
+    }
+    
+    // Este es para leer todo el documento | TRANSFERENCIAS
+    t = malloc(sizeof(Transferencias));
+    if(t == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    // Este es para los continentes | PC
+    pc = malloc(sizeof(P_Continentes));
+    if(pc == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+
+    //leo el archivo y lo vuelvo a vector
+    char linea[256];
+    fgets(linea, sizeof(linea), file1);
+    while(fgets(linea, sizeof(linea), file1))
+    {
+        //realloc si esta lleno
+        if(aux == capacidad1)
+        {
+            capacidad1++;
+            t = realloc(t, sizeof(Transferencias) * capacidad1);
+            if(t == NULL)
+            {
+                printf("No hay memoria");
+                return;
+            }
+        }
+
+        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
+        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
+               &t[aux].anio,
+               &t[aux].trimestre,
+               t[aux].p.pais_cod,
+               t[aux].p.pais_desc,
+               t[aux].operacion,
+               &t[aux].monto);
+
+        aux++;
+    }
+
+    //ahora tengo que leer registro por registro, buscarle el el continentes y volcarlo en inter
+    fgets(linea, sizeof(linea), file2);
+    while(fgets(linea, sizeof(linea), file2)){
+        if(k == capacidad2)
+        {
+            capacidad2++;
+            pc = realloc(pc, sizeof(P_Continentes) * capacidad2);
+            if(pc == NULL)
+            {
+                printf("No hay memoria");
+                return;
+            }
+        }
+        sscanf(linea, "%2s;%32[^;];%16[^;]", pc[k].pais_cod, pc[k].pais_desc, pc[k].continente);
+        k++;
+    }
+
+        // Este es para volcar lo nuevo ya leido | INTER
+    inter = malloc(sizeof(Intermedio_Arch) * aux);
+    if(inter == NULL)
+    {
+        printf("No hay memoria");
+        return;
+    }
+    
+    for(i = 0; i < aux; i++)
+    {
+        for(j = 0; j < k; j++)
+        {
+            if(strcmp(pc[j].pais_cod, t[i].p.pais_cod) == 0)
+            {
+                
+                // acá copiás los campos de t[i] + pc[j].continente hacia inter[i]
+                //anio, trimestre, pais code, pais desc, continene, operacion, monto
+                inter[i].anio = t[i].anio;
+                inter[i].trimestre = t[i].trimestre;
+                strcpy(inter[i].pais_cod, t[i].p.pais_cod);
+                strcpy(inter[i].pais_desc, t[i].p.pais_desc);
+                strcpy(inter[i].continente, pc[j].continente);
+                strcpy(inter[i].operacion, t[i].operacion);
+                inter[i].monto = t[i].monto;
+            }
+        }
+    }
+
+    for(j = 0; j < aux; j++){
+        printf("%d %d %s %-20.20s %s %s %.2f\n", inter[j].anio, inter[j].trimestre, inter[j].pais_cod, inter[j].pais_desc, inter[j].continente, inter[j].operacion, inter[j].monto);
+
+    }
+
+    FILE *salida = fopen("transferencias_base_larga.csv", "w");
+    if (salida == NULL)
+    {
+        printf("No se pudo crear el archivo\n");
+        return;
+    }
+
+    //Escritura de archivo
+    Intermedio_Arch *reg;
+
+    for (reg = inter; reg < inter + aux; reg++)
+    {
+        fprintf(salida, "%d;%d;%s;%s;%s;%s;%.2f\n",
+                reg->anio, reg->trimestre, reg->pais_cod, reg->pais_desc, reg->continente, reg->operacion, reg->monto);
+    }
+
+    fclose(salida);
+    fclose(file1);
+    fclose(file2);
+    free(t);
+    free(inter);
+    free(pc);
+
+}

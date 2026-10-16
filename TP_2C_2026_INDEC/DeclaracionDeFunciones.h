@@ -68,6 +68,17 @@ typedef struct {
     float monto;
 } OrdenMonto;
 
+//punto 7
+typedef struct{
+    int anio;
+    int trimestre;
+    char pais_cod[3];
+    char pais_desc[64];
+    char continente[20];
+    char operacion[2];
+    float monto;
+}Intermedio_Arch;
+
 //--------- Funciones ----------
 typedef void (*Accion)(void*);
 void parsearCont(char *linea, P_Continentes *reg);
@@ -106,6 +117,7 @@ void mostrarVec(Resumen_Continente *vec);
 void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *cantPaises);
 // Punto 6
 // Punto 7
+void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_Arch *inter);
 // Punto 8
 // Punto 9
 // Punto 10

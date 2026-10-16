@@ -11,6 +11,8 @@ int main()
     Transferencias t;
     Resumen_Pais *rp = NULL;
     OrdenMonto m;
+    Intermedio_Arch inter;
+    P_Continentes pc;
     int cont = 0;
     int contPaises;
     int *Contador_Registros = &cont; //almacena la cantidad de registros del archivo de operaciones se usa en MostrarArchivo();
@@ -65,7 +67,7 @@ int main()
         break;
 
     case 7:
-        //printf("opcion %d", opcion);
+        GenerarArchivoIntermedio(&t, &pc, &inter);
         break;
 
     case 8:
