@@ -233,7 +233,7 @@ void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp)
     fclose(file1);
     free(t);
 
-    
+
 
     //imprimo el vector
     int j;
@@ -603,7 +603,7 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
         if(m[i].monto < m[i+1].monto){
             maux = m[i+1];
             m[i+1] = m[i];
-            m[i] = maux; 
+            m[i] = maux;
             }
         }
     }
@@ -827,10 +827,9 @@ void mostrarVec(Resumen_Continente *vec)
     }
 }
 
-void procesarContinentes()
+void procesarContinentes(Resumen_Continente *vec)
 {
     Vector v;
-    Resumen_Continente vec[7];
     FILE *pf = fopen("transferencias_personales_clean.csv", "r");
     if(pf == NULL)
     {
@@ -865,8 +864,6 @@ void procesarContinentes()
                 resumen_hallado->total_debito += reg.monto;
         }
     }
-
-    mostrarVec(vec);
 
     destruirVector(&v);
     fclose(pf);
@@ -1024,7 +1021,7 @@ void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises){
         if((*rp)[i].total_credito < (*rp)[i+1].total_credito){
             Raux = (*rp)[i+1];
             (*rp)[i+1] = (*rp)[i];
-            (*rp)[i] = Raux; 
+            (*rp)[i] = Raux;
             }
         }
     }
@@ -1049,7 +1046,7 @@ void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises){
         if((*rp)[i].total_debito < (*rp)[i+1].total_debito){
             Raux = (*rp)[i+1];
             (*rp)[i+1] = (*rp)[i];
-            (*rp)[i] = Raux; 
+            (*rp)[i] = Raux;
             }
         }
     }
@@ -1071,6 +1068,86 @@ void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises){
     free(t);
 
 
+}
+
+void GenerarArchivoParticipacion(Resumen_Continente *vec)
+{
+    FILE *pf;
+    Resumen_Continente *ini;
+    Resumen_Continente *fin = vec + 7;
+    float total_c = 0;
+    float total_d = 0;
+    Participacion_Continente reg;
+
+    pf = fopen("participacion_continentes.dat", "wb");
+    if (!pf)
+    {
+        printf("Error al crear el archivo binario.\n");
+        return;
+    }
+
+    for(ini = vec; ini < fin; ini++)
+    {
+        total_c += ini->total_credito;
+        total_d += ini->total_debito;
+    }
+
+    for(ini = vec; ini < fin; ini++)
+    {
+        strcpy(reg.continente, ini->continente);
+
+        if (ini->total_credito > 0)
+            reg.porc_credito = ((ini->total_credito / total_c) * 100);
+        else
+            reg.porc_credito = 0;
+
+        if (ini->total_debito > 0)
+            reg.porc_debito = ((ini->total_debito / total_d) * 100);
+        else
+            reg.porc_debito = 0;
+
+        fwrite(&reg, sizeof(Participacion_Continente), 1, pf);
+    }
+
+    fclose(pf);
+    printf("Archivo binario '%s' generado exitosamente.\n", "participacion_continentes.dat");
+}
+
+int compararPorContinente(const void *a, const void *b)
+{
+    const Participacion_Continente *p1 = (const Participacion_Continente *)a;
+    const Participacion_Continente *p2 = (const Participacion_Continente *)b;
+
+    return strcmp(p1->continente, p2->continente);
+}
+
+void MostrarParticipacionDesdeArchivo()
+{
+    FILE *pf = fopen("participacion_continentes.dat", "rb");
+    if (!pf)
+    {
+        printf("Error al abrir el archivo binario.\n");
+        return;
+    }
+
+    Participacion_Continente reg[7];
+    Participacion_Continente *pr=reg;
+    int i;
+
+    fread(&reg, sizeof(Participacion_Continente), 7, pf);
+
+    qsort(reg, 7, sizeof(Participacion_Continente), compararPorContinente);
+
+    printf("%-18s %8s %8s\n", "CONTINENTE", "C", "D");
+    printf("------------------------------------\n");
+    for(i=0; i<7; i++)
+    {
+        printf("%-18s %8.2f %8.2f\n", pr->continente, pr->porc_credito, pr->porc_debito);
+        pr++;
+    }
+    printf("\n");
+
+    fclose(pf);
 }
 
 void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_Arch *inter){
@@ -1096,7 +1173,7 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
         printf("Archivo corrupto");
         return;
     }
-    
+
     // Este es para leer todo el documento | TRANSFERENCIAS
     t = malloc(sizeof(Transferencias));
     if(t == NULL)
@@ -1166,14 +1243,14 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
         printf("No hay memoria");
         return;
     }
-    
+
     for(i = 0; i < aux; i++)
     {
         for(j = 0; j < k; j++)
         {
             if(strcmp(pc[j].pais_cod, t[i].p.pais_cod) == 0)
             {
-                
+
                 // acá copiás los campos de t[i] + pc[j].continente hacia inter[i]
                 //anio, trimestre, pais code, pais desc, continene, operacion, monto
                 inter[i].anio = t[i].anio;

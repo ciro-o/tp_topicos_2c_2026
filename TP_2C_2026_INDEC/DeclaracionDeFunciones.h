@@ -68,6 +68,14 @@ typedef struct {
     float monto;
 } OrdenMonto;
 
+//Para el punto 7
+typedef struct
+{
+    char continente[20];
+    float porc_credito;
+    float porc_debito;
+} Participacion_Continente;
+
 //punto 7
 typedef struct{
     int anio;
@@ -105,7 +113,7 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais **rp);
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
 // Punto 2
-void procesarContinentes();
+void procesarContinentes(Resumen_Continente *vec);
 P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc);
 Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente);
 void inicializarResumen(Resumen_Continente *vec);
@@ -116,6 +124,9 @@ void mostrarVec(Resumen_Continente *vec);
 // Punto 5
 void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *cantPaises);
 // Punto 6
+void GenerarArchivoParticipacion(Resumen_Continente *vec);
+int compararPorContinente(const void *a, const void *b);
+void MostrarParticipacionDesdeArchivo();
 // Punto 7
 void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_Arch *inter);
 // Punto 8
