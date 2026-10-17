@@ -10,6 +10,7 @@ int main()
     //UTILS
     Transferencias t;
     Resumen_Pais *rp = NULL;
+    Resumen_Continente vec[7];
     OrdenMonto m;
     Intermedio_Arch inter;
     P_Continentes pc;
@@ -46,7 +47,8 @@ int main()
         break;
 
     case 2:
-        procesarContinentes();
+        procesarContinentes(vec);
+        mostrarVec(vec);
         break;
 
     case 3:
@@ -63,7 +65,9 @@ int main()
         break;
 
     case 6:
-        //printf("opcion %d", opcion);
+        procesarContinentes(vec);
+        GenerarArchivoParticipacion(vec);
+        MostrarParticipacionDesdeArchivo();
         break;
 
     case 7:
