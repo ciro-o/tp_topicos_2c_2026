@@ -83,9 +83,7 @@ int main()
         break;
 
     case 9:
-        while(1 == 1){
-            malloc(sizeof(int) * 1000000000000000000);
-        }
+
         break;
 
     case 10:

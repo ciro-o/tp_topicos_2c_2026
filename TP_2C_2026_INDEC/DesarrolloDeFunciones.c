@@ -1,7 +1,7 @@
 #include "DeclaracionDeFunciones.h"
 
 
-void MostrarArchivo(Transferencias *t, int* Contador_Registros)
+void MostrarArchivo(Transferencias *t)
 {
 
     FILE *file1 = fopen("transferencias_personales_clean.csv", "r");
@@ -23,8 +23,6 @@ void MostrarArchivo(Transferencias *t, int* Contador_Registros)
                t->p.pais_desc,
                t->operacion,
                &t->monto);
-
-        (*Contador_Registros)++;
 
         printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
                t->anio, t->trimestre, t->p.pais_cod, t->p.pais_desc, t->operacion, t->monto);

@@ -149,7 +149,7 @@ void insertarAlFinal(Vector *v, void *elem);
 void vectorRecorrer( const Vector * v, Accion accion);
 
 //1) Leer archivos de operaciones (Transferencias personales)
-void MostrarArchivo(Transferencias *t, int *);
+void MostrarArchivo(Transferencias *t);
 //2) Agrupar información por pais (por código de país capaz) (vector dinamico)
 void MostrarArchivoPorPais(Transferencias *t, int );
 //3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
