@@ -625,7 +625,7 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
 
 }
 
-void parsear(char *linea, Transferencias *reg)
+bool parsear(char *linea, Transferencias *reg)
 {
     char *act;
 
@@ -637,29 +637,37 @@ void parsear(char *linea, Transferencias *reg)
         *act = '\0';
 
     act = strrchr(linea, ';');
-    sscanf(act + 1, "%f", &reg->monto);
+    if (!act || sscanf(act + 1, "%f", &reg->monto) != 1)
+        return false;
     *act = '\0';
 
     act = strrchr(linea, ';');
+    if (!act)
+        return false;
     *reg->operacion = *(act + 1);
     *(reg->operacion + 1) = '\0';
     *act = '\0';
 
     act = strrchr(linea, ';');
+    if (!act)
+        return false;
     strncpy(reg->p.pais_desc, act + 1, sizeof(reg->p.pais_desc) - 1);
     reg->p.pais_desc[sizeof(reg->p.pais_desc) - 1] = '\0';
     *act = '\0';
 
     act = strrchr(linea, ';');
+    if (!act)
+        return false;
     strncpy(reg->p.pais_cod, act + 1, sizeof(reg->p.pais_cod) - 1);
     reg->p.pais_cod[sizeof(reg->p.pais_cod) - 1] = '\0';
     *act = '\0';
 
     act = strrchr(linea, ';');
-    sscanf(act + 1, "%d", &reg->trimestre);
+    if (!act || sscanf(act + 1, "%d", &reg->trimestre) != 1)
+        return false;
     *act = '\0';
 
-    sscanf(linea, "%d", &reg->anio);
+    return sscanf(linea, "%d", &reg->anio) == 1;
 }
 
 void parsearCont(char *linea, P_Continentes *reg)
@@ -1154,7 +1162,6 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
 
     int capacidad1 = 1;
     int capacidad2 = 1;
-    int capacidad3 = 1;
     int aux = 0;
     int k = 0;
     int j = 0;
@@ -1208,15 +1215,10 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
         }
 
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
-               &t[aux].anio,
-               &t[aux].trimestre,
-               t[aux].p.pais_cod,
-               t[aux].p.pais_desc,
-               t[aux].operacion,
-               &t[aux].monto);
+        if(parsear(linea, &t[aux])){
+            aux++;
+        }
 
-        aux++;
     }
 
     //ahora tengo que leer registro por registro, buscarle el el continentes y volcarlo en inter
@@ -1232,7 +1234,7 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
                 return;
             }
         }
-        sscanf(linea, "%2s;%32[^;];%16[^;]", pc[k].pais_cod, pc[k].pais_desc, pc[k].continente);
+        parsearCont(linea, &pc[k]);
         k++;
     }
 
@@ -1769,4 +1771,122 @@ void OpcionPromedioTrimestralPorPais()
         imprimirPromedios(&promedios);
 
     destruirVector(&promedios);
+}
+
+// Busca elem en un vector ORDENADO segun cmp (busqueda binaria). Si existe, devuelve el puntero a ese elemento
+// del vector; si no existe, lo inserta en el lugar que le corresponde y devuelve el puntero al elemento nuevo.
+// Devuelve NULL si no hay memoria. Sirve para cualquier tipo de elemento: solo cambia la funcion cmp.
+void *obtenerOInsertarEnOrden(Vector *v, const void *elem, int (*cmp)(const void*, const void*))
+{
+    char *ini = (char*)v->vec;
+    char *fin = ini + v->cantElem * v->tamElem;
+    char *medio;
+    size_t desplazamiento;
+    int comparacion;
+
+    while(ini < fin)
+    {
+        medio = ini + ((fin - ini) / v->tamElem / 2) * v->tamElem;
+        comparacion = cmp(elem, medio);
+
+        if(comparacion == 0)
+            return medio;
+
+        if(comparacion < 0)
+            fin = medio;
+        else
+            ini = medio + v->tamElem;
+    }
+
+    // no estaba: ini es la posicion donde corresponde insertarlo.
+    // redimensionar puede mover el bloque, por eso guardo la distancia al inicio y no el puntero
+    desplazamiento = ini - (char*)v->vec;
+
+    if(v->cantElem == v->cap && !redimensionar(v, v->cap * 2))
+        return NULL;
+
+    ini = (char*)v->vec + desplazamiento;
+    memmove(ini + v->tamElem, ini, v->cantElem * v->tamElem - desplazamiento);
+    memcpy(ini, elem, v->tamElem);
+    v->cantElem++;
+
+    return ini;
+}
+
+// Ordena un arreglo de cantidad elementos de tamano tam segun cmp (insercion: estable, sin funciones de biblioteca).
+// Misma firma que qsort. Devuelve false (y no ordena) si no hay memoria para el auxiliar.
+bool ordenarInsercion(void *base, size_t cant, size_t tam, int (*cmp)(const void*, const void*))
+{
+    char *ini = (char*)base;
+    char *fin = ini + cant * tam;
+    char *i;
+    char *j;
+    char *aux;
+
+    if(cant < 2)
+        return true;
+
+    aux = (char*)malloc(tam);
+    if(!aux)
+        return false;
+
+    for(i = ini + tam; i < fin; i += tam)
+    {
+        memcpy(aux, i, tam);
+
+        j = i;
+        while(j > ini && cmp(j - tam, aux) > 0)
+        {
+            memcpy(j, j - tam, tam);
+            j -= tam;
+        }
+
+        memcpy(j, aux, tam);
+    }
+
+    free(aux);
+
+    return true;
+}
+
+// Cuenta caracteres (no bytes) de un texto UTF-8: los bytes 10xxxxxx son la continuacion de un caracter, no uno nuevo.
+// Sirve para alinear columnas con nombres con tildes, porque %-*s cuenta bytes.
+int contarCaracteres(const char *texto)
+{
+    int cantidad = 0;
+
+    while(*texto)
+    {
+        if((*texto & 0xC0) != 0x80)
+            cantidad++;
+        texto++;
+    }
+
+    return cantidad;
+}
+
+// Muestra por pantalla el contenido de un archivo de texto, caracter a caracter (sin limite de largo de linea).
+// Devuelve false si no se pudo abrir el archivo.
+bool mostrarArchivoTexto(const char *nombArch)
+{
+    FILE *archivo = fopen(nombArch, "r");
+    int c;
+
+    if(!archivo)
+        return false;
+
+    while((c = fgetc(archivo)) != EOF)
+        putchar(c);
+
+    fclose(archivo);
+
+    return true;
+}
+
+void Menu(){
+
+
+
+
+
 }

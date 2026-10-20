@@ -99,10 +99,10 @@ typedef struct{
     char pais_desc[64];
     char continente[20];
     char operacion[2];
-    float monto;
+    double monto;
 }Intermedio_Arch;
 
-/Para el punto 3: acumulador de un pais para el anio pedido (un monto por trimestre)
+//Para el punto 3: acumulador de un pais para el anio pedido (un monto por trimestre)
 typedef struct
 {
     P_Continentes p; //reutiliza la estructura del pais (codigo, nombre y continente)
@@ -131,7 +131,7 @@ typedef struct
 //--------- Funciones ----------
 typedef void (*Accion)(void*);
 void parsearCont(char *linea, P_Continentes *reg);
-void parsear(char *linea, Transferencias *reg);
+bool parsear(char *linea, Transferencias *reg);
 
 //TDA
 void *obtenerOInsertarEnOrden(Vector *v, const void *elem, int (*cmp)(const void*, const void*));
@@ -200,5 +200,6 @@ void OpcionPromedioTrimestralPorPais();
 // Punto 9
 
 // Punto 10
+void Menu();
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED

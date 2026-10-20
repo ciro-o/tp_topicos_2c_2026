@@ -9,24 +9,23 @@ int main()
 
     //UTILS
     Transferencias t;
+    Vector transferencias;
     Resumen_Pais *rp = NULL;
     Resumen_Continente vec[7];
-    OrdenMonto m;
     Intermedio_Arch inter;
     P_Continentes pc;
-    int cont = 0;
     int contPaises;
-    int *Contador_Registros = &cont; //almacena la cantidad de registros del archivo de operaciones se usa en MostrarArchivo();
+
 
     //FIN UTILS
 
     int opcion;
 
-    crearVector(&t, sizeof(Transferencias), 256);
-    if(!cargarTransferencias(&t, "transferencias_personales_clean.csv"))
+    crearVector(&transferencias, sizeof(Transferencias), 256);
+    if(!cargarTransferencias(&transferencias, "transferencias_personales_clean.csv"))
     {
         printf("Error al abrir transferencias_personales_clean.csv\n");
-        destruirVector(&t);
+        destruirVector(&transferencias);
         return 1;
     }
 
@@ -40,10 +39,7 @@ int main()
         "7. Generación del archivo intermedio transferencias_base_larga.csv.\n"
         "8. Promedio trimestral por país.\n"
         "9. Promedio trimestral por continente, operación y año.\n"
-        "10. Salir.\n"
-        "11. Importe debito por pais.\n"
-        "12. Importe credito por pais.\n"
-        "13. Orden por Monto.\n");
+        "10. Salir.\n");
 
     printf("Elija una opcíon: ");
     scanf("%d", &opcion);
@@ -61,11 +57,11 @@ int main()
         break;
 
     case 3:
-        OpcionSaldoTrimestralPorPais(&t);
+        OpcionSaldoTrimestralPorPais(&transferencias);
         break;
 
     case 4:
-        OpcionTotalesAnuales(&t);
+        OpcionTotalesAnuales(&transferencias);
         break;
 
     case 5:
@@ -87,15 +83,17 @@ int main()
         break;
 
     case 9:
-        
+        while(1 == 1){
+            malloc(sizeof(int) * 1000000000000000000);
+        }
         break;
 
     case 10:
-        
+
         break;
     }
 
 
-
+    destruirVector(&transferencias);
     return 0;
 }
