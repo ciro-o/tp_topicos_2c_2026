@@ -11,7 +11,22 @@
 #include <stdbool.h>
 //----------- Libreria Externa -----------
 #include <windows.h>
+//----------- Macros -----------
+//Punto 3 y 4: anchos de columnas y tamanos de los textos de las tablas
+#define CANT_TRIMESTRES 4
+#define ANCHO_COL_PAIS 42
+#define ANCHO_COL_SALDO 12
+#define TAM_NOMBRE_ARCHIVO 40
+#define TAM_ETIQUETA 8
+#define ANCHO_COL_ANIO 6
+#define ANCHO_COL_MONTO 10
+#define ANCHO_COL_VARIACION 14
 
+//Punto 8
+#define ANCHO_COL_COD 6
+#define ANCHO_COL_OP 11
+#define ANCHO_COL_TRIM 12
+#define ANCHO_COL_PROM 10
 //---------------- Structs ---------------
 
 //•	paises_continentes.csv
@@ -87,10 +102,44 @@ typedef struct{
     float monto;
 }Intermedio_Arch;
 
+/Para el punto 3: acumulador de un pais para el anio pedido (un monto por trimestre)
+typedef struct
+{
+    P_Continentes p; //reutiliza la estructura del pais (codigo, nombre y continente)
+    double creditos[CANT_TRIMESTRES];
+    double debitos[CANT_TRIMESTRES];
+} SaldoPais;
+
+//Para el punto 4: acumulador de un anio (total de creditos y de debitos)
+typedef struct
+{
+    int anio;
+    double creditos;
+    double debitos;
+} TotalAnual;
+
+//Para el punto 8: promedio trimestral de un pais por tipo de operacion ([0] = credito, [1] = debito)
+typedef struct
+{
+    char pais_cod[3];
+    char pais_desc[64];
+    bool hay[2];       //si el pais tiene registros de esa operacion en el archivo
+    double suma[2];    //monto acumulado de los trimestres con monto mayor que cero
+    int trimestres[2]; //cantidad de trimestres con monto mayor que cero
+} PromedioPais;
+
 //--------- Funciones ----------
 typedef void (*Accion)(void*);
 void parsearCont(char *linea, P_Continentes *reg);
 void parsear(char *linea, Transferencias *reg);
+
+//TDA
+void *obtenerOInsertarEnOrden(Vector *v, const void *elem, int (*cmp)(const void*, const void*));
+bool ordenarInsercion(void *base, size_t cant, size_t tam, int (*cmp)(const void*, const void*));
+
+//Utilidades
+int contarCaracteres(const char *texto);
+bool mostrarArchivoTexto(const char *nombArch);
 
 //TDA Vector.
 void crearVector(Vector *v, size_t tamElem, int cap);
@@ -120,7 +169,18 @@ void inicializarResumen(Resumen_Continente *vec);
 void cargarVec(Vector *v, char *nombArch);
 void mostrarVec(Resumen_Continente *vec);
 // Punto 3
+bool cargarTransferencias(Vector *v, const char *nombArch); //carga general del CSV principal: la usa main una sola vez
+int cmpSaldoPais(const void *a, const void *b);
+bool acumularSaldosPorPais(const Vector *transf, int anio, Vector *saldos);
+void imprimirSaldos(FILE *destino, const Vector *saldos, int anio);
+bool pedirAnio(int *anio);
+void OpcionSaldoTrimestralPorPais(const Vector *transf);
+
 // Punto 4
+int cmpTotalAnual(const void *a, const void *b);
+bool acumularTotalesPorAnio(const Vector *transf, Vector *totales);
+void imprimirTotalesAnuales(const Vector *totales);
+void OpcionTotalesAnuales(const Vector *transf);
 // Punto 5
 void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *cantPaises);
 // Punto 6
@@ -130,7 +190,15 @@ void MostrarParticipacionDesdeArchivo();
 // Punto 7
 void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_Arch *inter);
 // Punto 8
+bool parsearIntermedio(char *linea, Intermedio_Arch *reg);
+int cmpPaisPromedio(const void *a, const void *b);
+int cmpPromedioCredito(const void *a, const void *b);
+double promedioTrimestral(const PromedioPais *p, int op);
+bool cargarPromedios(const char *nombArch, Vector *promedios);
+void imprimirPromedios(const Vector *promedios);
+void OpcionPromedioTrimestralPorPais();
 // Punto 9
+
 // Punto 10
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED

@@ -21,6 +21,15 @@ int main()
     //FIN UTILS
 
     int opcion;
+
+    crearVector(&t, sizeof(Transferencias), 256);
+    if(!cargarTransferencias(&t, "transferencias_personales_clean.csv"))
+    {
+        printf("Error al abrir transferencias_personales_clean.csv\n");
+        destruirVector(&t);
+        return 1;
+    }
+
     printf
     (   "1. Totales por país.\n"
         "2. Totales por continente.\n"
@@ -52,15 +61,14 @@ int main()
         break;
 
     case 3:
-
+        OpcionSaldoTrimestralPorPais(&t);
         break;
 
     case 4:
-        //printf("opcion %d", opcion);
+        OpcionTotalesAnuales(&t);
         break;
 
     case 5:
-        //printf("opcion %d", opcion);
         Ranking_pais(&t, &rp, &contPaises);
         break;
 
@@ -75,27 +83,15 @@ int main()
         break;
 
     case 8:
-        //printf("opcion %d", opcion);
+        OpcionPromedioTrimestralPorPais();
         break;
 
     case 9:
-        //printf("opcion %d", opcion);
+        
         break;
 
     case 10:
-        //printf("opcion %d", opcion);
-        break;
-    case 11:
-        //printf("opcion %d", opcion);
-        ImporteDebitoPorPais(&t, &rp);
-        break;
-    case 12:
-        //printf("opcion %d", opcion);
-        ImporteCreditoPorPais(&t, &rp);
-        break;
-    case 13:
-        //printf("opcion %d", opcion);
-        OrdenarPorMonto(&t, &m);
+        
         break;
     }
 
