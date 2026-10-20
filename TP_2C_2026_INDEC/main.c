@@ -47,7 +47,7 @@ int main()
     switch (opcion)
     {
     case 1:
-        MostrarArchivoPorPais(&t, 5411);
+        MostrarArchivoPorPais(&t);
         MostrarCantOperacionesPorPais(&t, &rp);
         break;
 

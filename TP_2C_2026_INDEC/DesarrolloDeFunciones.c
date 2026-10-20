@@ -28,13 +28,11 @@ void MostrarArchivo(Transferencias *t)
                t->anio, t->trimestre, t->p.pais_cod, t->p.pais_desc, t->operacion, t->monto);
     }
 
-    printf("\n Contador: %d \n", *(Contador_Registros));
-
     fclose(file1);
 }
 
 //arreglar ya que el cont esta hardcodeado
-void MostrarArchivoPorPais(Transferencias *t, int cont){
+void MostrarArchivoPorPais(Transferencias *t){
 
     //malloc
     //Transferencias *t;
@@ -42,7 +40,7 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
     Transferencias *reg;
 
     // Este es para leer todo el documento
-    t = malloc(sizeof(Transferencias) * cont);
+    t = malloc(sizeof(Transferencias));
     if(t == NULL)
     {
         printf("No hay memoria");
@@ -57,10 +55,22 @@ void MostrarArchivoPorPais(Transferencias *t, int cont){
     }
     //Aca tengo el archivo en vector
     int aux = 0;
+    int capacidad = 0;
     char linea[256];
     fgets(linea, sizeof(linea), file1);
     while(fgets(linea, sizeof(linea), file1))
     {
+        //realloc si esta lleno
+        if(aux == capacidad)
+        {
+            capacidad++;
+            t = realloc(t, sizeof(Transferencias) * capacidad);
+            if(t == NULL)
+            {
+                printf("No hay memoria");
+                return;
+            }
+        }
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
         sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
                &t[aux].anio,
