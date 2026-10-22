@@ -87,7 +87,7 @@ void MostrarArchivoPorPais(const Vector *transferencias)
                reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
     } */
     free(t);
-    fclose(salida);
+    
 }
 
 void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp)
