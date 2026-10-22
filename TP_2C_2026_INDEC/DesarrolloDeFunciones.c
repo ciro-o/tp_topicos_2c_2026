@@ -30,54 +30,25 @@ void MostrarArchivo(Transferencias *t)
     fclose(file1);
 }
 
-void MostrarArchivoPorPais(Transferencias *t)
+void MostrarArchivoPorPais(const Vector *transferencias)
 {
 
-    // malloc
-    // Transferencias *t;
+    Transferencias *t;
     Transferencias temp;
     Transferencias *reg;
+    int aux;
+    int k;
+    FILE *salida;
 
-    // Este es para leer todo el documento
-    t = malloc(sizeof(Transferencias));
+    aux = transferencias->cantElem;
+    t = malloc(sizeof(Transferencias) * aux);
     if (t == NULL)
     {
         printf("No hay memoria");
         return;
     }
+    memcpy(t, transferencias->vec, sizeof(Transferencias) * aux);
 
-    FILE *file1 = fopen("transferencias_personales_clean.csv", "r");
-    if (file1 == NULL)
-    {
-        printf("Error al abrir archivo\n");
-        return;
-    }
-    // Aca tengo el archivo en vector
-    int aux = 0;
-    int capacidad = 0;
-    char linea[256];
-    fgets(linea, sizeof(linea), file1);
-    while (fgets(linea, sizeof(linea), file1))
-    {
-        // realloc si esta lleno
-        if (aux == capacidad)
-        {
-            capacidad++;
-            t = realloc(t, sizeof(Transferencias) * capacidad);
-            if (t == NULL)
-            {
-                printf("No hay memoria");
-                return;
-            }
-        }
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if (parsear(linea, &t[aux]))
-        {
-            aux++;
-        }
-    }
-
-    int k;
     // ordenamiento
     for (k = 0; k < aux - 1; k++)
     {
@@ -92,7 +63,7 @@ void MostrarArchivoPorPais(Transferencias *t)
         }
     }
 
-    FILE *salida = fopen("paises_ordenado.txt", "w");
+    salida = fopen("paises_ordenado.txt", "w");
     if (salida == NULL)
     {
         printf("No se pudo crear el archivo\n");
@@ -116,7 +87,7 @@ void MostrarArchivoPorPais(Transferencias *t)
                reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
     } */
     free(t);
-    fclose(file1);
+    fclose(salida);
 }
 
 void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp)
@@ -500,7 +471,7 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
     int aux = 0;
     int capacidad = 1;
     char linea[256];
-    //fgets(linea, sizeof(linea), file1);
+    // fgets(linea, sizeof(linea), file1);
     while (fgets(linea, sizeof(linea), file1))
     {
         // realloc si esta lleno
@@ -808,97 +779,69 @@ void mostrarVec(Resumen_Continente *vec)
     }
 }
 
-void procesarContinentes(Resumen_Continente *vec)
+void procesarContinentes(const Vector *transferencias, Resumen_Continente *vec)
 {
     Vector v;
-    FILE *pf = fopen("transferencias_personales_clean.csv", "r");
-    if (pf == NULL)
-    {
-        printf("Error al abrir archivo\n");
-        return;
-    }
+    Transferencias *actual;
+    Transferencias *fin;
+    P_Continentes *pais_hallado;
+    Resumen_Continente *resumen_hallado;
 
     crearVector(&v, sizeof(P_Continentes), 10);
     cargarVec(&v, "paises_continentes.csv");
     inicializarResumen(vec);
 
-    char linea[TAMLINEA];
-    Transferencias reg;
-    P_Continentes *pais_hallado;
-    Resumen_Continente *resumen_hallado;
+    actual = (Transferencias *)transferencias->vec;
+    fin = actual + transferencias->cantElem;
 
-    fgets(linea, sizeof(linea), pf);
-    while (fgets(linea, sizeof(linea), pf))
+    for (; actual < fin; actual++)
     {
-        parsear(linea, &reg);
-
-        pais_hallado = buscarPorPaisDesc(&v, reg.p.pais_desc);
+        pais_hallado = buscarPorPaisDesc(&v, actual->p.pais_desc);
 
         resumen_hallado = buscarEnResumen(vec, vec + 7, pais_hallado->continente);
 
         if (resumen_hallado != NULL)
         {
             resumen_hallado->registros++;
-            if (*(reg.operacion) == 'C')
-                resumen_hallado->total_credito += reg.monto;
+            if (*(actual->operacion) == 'C')
+                resumen_hallado->total_credito += actual->monto;
             else
-                resumen_hallado->total_debito += reg.monto;
+                resumen_hallado->total_debito += actual->monto;
         }
     }
 
     destruirVector(&v);
-    fclose(pf);
-
     ordenarInsercion(vec, 7, sizeof(Resumen_Continente), cmpResumenCreditoDesc);
 }
 
-void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises)
+void Ranking_pais(const Vector *transferencias, Resumen_Pais **rp, int *contPaises)
 {
 
-    // tengo todo el archivo leido en un vector
-    FILE *file1;
-    file1 = fopen("transferencias_personales_clean.csv", "r");
-    if (file1 == NULL)
-    {
-        printf("Archivo corrupto");
-        return;
-    }
-    t = malloc(sizeof(Transferencias));
+    // declaraciones del punto
+    Transferencias *t;
+    Transferencias *reg;
+    Transferencias temp;
+    Transferencias *base;
+    Transferencias *actual;
+    Resumen_Pais *destino;
+    int aux;
+    int k;
+    int cap;
+    int offset;
+    int cantPaises;
+    char tipoOperacion;
+
+    aux = transferencias->cantElem;
+    t = malloc(sizeof(Transferencias) * aux);
     if (t == NULL)
     {
         printf("No hay memoria");
         return;
     }
-
-    // Aca tengo el archivo en vector
-    int aux = 0;
-    int capacidad = 1;
-    char linea[256];
-    fgets(linea, sizeof(linea), file1);
-    while (fgets(linea, sizeof(linea), file1))
-    {
-        // realloc si esta lleno
-        if (aux == capacidad)
-        {
-            capacidad++;
-            t = realloc(t, sizeof(Transferencias) * capacidad);
-            if (t == NULL)
-            {
-                printf("No hay memoria");
-                return;
-            }
-        }
-
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if (parsear(linea, &t[aux]))
-        {
-            aux++;
-        }
-    }
+    memcpy(t, transferencias->vec, sizeof(Transferencias) * aux);
     // TERMINA: tengo todo el archivo leido en un vector
 
     // ordeno todo el archivo por pais, registro, credito y debito
-    Transferencias *reg, temp;
     for (int k = 0; k < aux - 1; k++)
     {
         for (reg = t + 1; reg < t + aux; reg++)
@@ -912,39 +855,33 @@ void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises)
         }
     }
 
-    // indexo todo el vec por paises
-    *rp = malloc(sizeof(Resumen_Pais));
+    // agrupo por pais
+    cap = 1;
+    *rp = malloc(sizeof(Resumen_Pais) * cap);
     if (*rp == NULL)
     {
         printf("No hay memoria");
         return;
     }
 
-    int cap = 1;
-    int i = 0;
-    int estatico = 0;
-    int k = 0;
-    //---- primer registro todo cero -----
-    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
-    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
-    (*rp)[0].registros = 0;
-    (*rp)[0].total_credito = 0;
-    (*rp)[0].total_debito = 0;
-    //----- recorro los registros -----
-    for (k = 0; k < aux; k++)
+    destino = *rp;
+    base = t;
+    strcpy(destino->pais_cod, base->p.pais_cod);
+    strcpy(destino->pais_desc, base->p.pais_desc);
+    destino->registros = 0;
+    destino->total_credito = 0;
+    destino->total_debito = 0;
+
+    for (actual = t; actual < t + aux; actual++)
     {
-        if (strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
+        if (strcmp(base->p.pais_cod, actual->p.pais_cod) != 0)
         {
-            // Vacio, sumo afuera
-        }
-        else
-        {
+            base = actual;
+            destino++;
 
-            i++;
-            estatico = k;
-
-            if (i == cap)
+            if (destino == *rp + cap)
             {
+                offset = destino - *rp;
                 cap++;
                 *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
                 if (*rp == NULL)
@@ -952,31 +889,24 @@ void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises)
                     printf("No hay memoria");
                     return;
                 }
+                destino = *rp + offset;
             }
 
-            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
-            (*rp)[i].registros = 0;
-            (*rp)[i].total_credito = 0;
-            (*rp)[i].total_debito = 0;
+            strcpy(destino->pais_cod, base->p.pais_cod);
+            strcpy(destino->pais_desc, base->p.pais_desc);
+            destino->registros = 0;
+            destino->total_credito = 0;
+            destino->total_debito = 0;
         }
 
-        (*rp)[i].registros = (*rp)[i].registros + 1;
-        if (t[k].operacion[0] == 'C')
-        {
-            (*rp)[i].total_credito += t[k].monto;
-        };
-        if (t[k].operacion[0] == 'D')
-        {
-            (*rp)[i].total_debito += t[k].monto;
-        };
+        destino->registros++;
+        if (actual->operacion[0] == 'C')
+            destino->total_credito += actual->monto;
+        if (actual->operacion[0] == 'D')
+            destino->total_debito += actual->monto;
     }
-    *contPaises = i + 1;
-    // TERMINA
+    *contPaises = destino - *rp + 1;
 
-    // Pregunto por cantidad de paises y tiro un for validando
-    int cantPaises;
-    char tipoOperacion;
     printf("Elija la cantidad de paises: ");
     scanf("%d", &cantPaises);
     printf("Elija el tipo de Operacion: ");
@@ -1053,7 +983,7 @@ void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises)
                    actualImprimir->registros, actualImprimir->total_debito);
         }
     }
-    fclose(file1);
+
     free(*rp);
     free(t);
 }
@@ -1138,23 +1068,29 @@ void MostrarParticipacionDesdeArchivo()
     fclose(pf);
 }
 
-void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_Arch *inter)
+void GenerarArchivoIntermedio(const Vector *transferencias, P_Continentes *pcParam, Intermedio_Arch *interParam)
 {
 
-    int capacidad1 = 1;
-    int capacidad2 = 1;
-    int aux = 0;
-    int k = 0;
-    int j = 0;
-
-    FILE *file1;
-    file1 = fopen("transferencias_personales_clean.csv", "r");
-    if (file1 == NULL)
-    {
-        printf("Archivo corrupto");
-        return;
-    }
+    Transferencias *t;
+    Transferencias *regT;
+    P_Continentes *pc;
+    P_Continentes *regPC;
+    P_Continentes *escribirPC;
+    P_Continentes *finPC;
+    Intermedio_Arch *inter;
+    Intermedio_Arch *regInter;
+    Intermedio_Arch *reg;
     FILE *file2;
+    FILE *salida;
+    char linea[256];
+    int aux;
+    int capacidad2;
+    int offsetPC;
+    int j;
+
+    (void)pcParam;
+    (void)interParam;
+
     file2 = fopen("paises_continentes.csv", "r");
     if (file2 == NULL)
     {
@@ -1162,79 +1098,66 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
         return;
     }
 
-    // Este es para leer todo el documento | TRANSFERENCIAS
-    t = malloc(sizeof(Transferencias));
+    // ya esta cargado una vez en memoria (Vector transferencias): solo lo copio, no reabro el archivo principal
+    aux = transferencias->cantElem;
+    t = malloc(sizeof(Transferencias) * aux);
     if (t == NULL)
     {
         printf("No hay memoria");
+        fclose(file2);
         return;
     }
+    memcpy(t, transferencias->vec, sizeof(Transferencias) * aux);
 
-    // Este es para los continentes | PC
-    pc = malloc(sizeof(P_Continentes));
+    capacidad2 = 1;
+    pc = malloc(sizeof(P_Continentes) * capacidad2);
     if (pc == NULL)
     {
         printf("No hay memoria");
+        free(t);
+        fclose(file2);
         return;
     }
 
-    // leo el archivo y lo vuelvo a vector
-    char linea[256];
-    fgets(linea, sizeof(linea), file1);
-    while (fgets(linea, sizeof(linea), file1))
-    {
-        // realloc si esta lleno
-        if (aux == capacidad1)
-        {
-            capacidad1++;
-            t = realloc(t, sizeof(Transferencias) * capacidad1);
-            if (t == NULL)
-            {
-                printf("No hay memoria");
-                return;
-            }
-        }
+    escribirPC = pc;
+    finPC = pc + capacidad2;
 
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if (parsear(linea, &t[aux]))
-        {
-            aux++;
-        }
-    }
-
-    // ahora tengo que leer registro por registro, buscarle el el continentes y volcarlo en inter
     fgets(linea, sizeof(linea), file2);
     while (fgets(linea, sizeof(linea), file2))
     {
-        if (k == capacidad2)
+        if (escribirPC == finPC)
         {
+            offsetPC = escribirPC - pc;
             capacidad2++;
             pc = realloc(pc, sizeof(P_Continentes) * capacidad2);
             if (pc == NULL)
             {
                 printf("No hay memoria");
+                free(t);
+                fclose(file2);
                 return;
             }
+            escribirPC = pc + offsetPC;
+            finPC = pc + capacidad2;
         }
-        parsearCont(linea, &pc[k]);
-        k++;
+        parsearCont(linea, escribirPC);
+        escribirPC++;
     }
+    fclose(file2);
 
-    // Este es para volcar lo nuevo ya leido | INTER
     inter = malloc(sizeof(Intermedio_Arch) * aux);
     if (inter == NULL)
     {
         printf("No hay memoria");
+        free(t);
+        free(pc);
         return;
     }
 
-    Transferencias *regT;
-    P_Continentes *regPC;
-    Intermedio_Arch *regInter = inter;
-
+    regInter = inter;
     for (regT = t; regT < t + aux; regT++, regInter++)
     {
-        for (regPC = pc; regPC < pc + k; regPC++)
+        for (regPC = pc; regPC < escribirPC; regPC++)
         {
             if (strcmp(regPC->pais_cod, regT->p.pais_cod) == 0)
             {
@@ -1254,15 +1177,15 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
         printf("%d %d %s %-20.20s %s %s %.2f\n", inter[j].anio, inter[j].trimestre, inter[j].pais_cod, inter[j].pais_desc, inter[j].continente, inter[j].operacion, inter[j].monto);
     }
 
-    FILE *salida = fopen("transferencias_base_larga.csv", "w");
+    salida = fopen("transferencias_base_larga.csv", "w");
     if (salida == NULL)
     {
         printf("No se pudo crear el archivo\n");
+        free(t);
+        free(inter);
+        free(pc);
         return;
     }
-
-    // Escritura de archivo
-    Intermedio_Arch *reg;
 
     for (reg = inter; reg < inter + aux; reg++)
     {
@@ -1271,8 +1194,6 @@ void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_A
     }
 
     fclose(salida);
-    fclose(file1);
-    fclose(file2);
     free(t);
     free(inter);
     free(pc);
@@ -1994,12 +1915,12 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
         switch (opcion)
         {
         case 1:
-            MostrarArchivoPorPais(t);
+            MostrarArchivoPorPais(transferencias);
             OrdenarPorMonto(t, m);
             break;
 
         case 2:
-            procesarContinentes(vec);
+            procesarContinentes(transferencias, vec);
             mostrarVec(vec);
             break;
 
@@ -2012,17 +1933,17 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
             break;
 
         case 5:
-            Ranking_pais(t, rp, contPaises);
+            Ranking_pais(transferencias, rp, contPaises);
             break;
 
         case 6:
-            procesarContinentes(vec);
+            procesarContinentes(transferencias, vec);
             GenerarArchivoParticipacion(vec);
             MostrarParticipacionDesdeArchivo();
             break;
 
         case 7:
-            GenerarArchivoIntermedio(t, pc, inter);
+            GenerarArchivoIntermedio(transferencias, pc, inter);
             break;
 
         case 8:

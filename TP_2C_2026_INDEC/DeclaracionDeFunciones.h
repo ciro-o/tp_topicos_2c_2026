@@ -161,7 +161,7 @@ void vectorRecorrer( const Vector * v, Accion accion);
 //1) Leer archivos de operaciones (Transferencias personales)
 void MostrarArchivo(Transferencias *t);
 //2) Agrupar información por pais (por código de país capaz) (vector dinamico)
-void MostrarArchivoPorPais(Transferencias *t);
+void MostrarArchivoPorPais(const Vector *transferencias);
 //3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
 void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp);
 //4) Sumar el importe de todas las operaciones Debito (por código de país capaz) (vector dinamico)
@@ -173,7 +173,7 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
 // Punto 2
 int cmpResumenCreditoDesc(const void *a, const void *b);
-void procesarContinentes(Resumen_Continente *vec);
+void procesarContinentes(const Vector *transferencias, Resumen_Continente *vec);
 P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc);
 Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente);
 void inicializarResumen(Resumen_Continente *vec);
@@ -193,13 +193,13 @@ bool acumularTotalesPorAnio(const Vector *transf, Vector *totales);
 void imprimirTotalesAnuales(const Vector *totales);
 void OpcionTotalesAnuales(const Vector *transf);
 // Punto 5
-void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *cantPaises);
+void Ranking_pais(const Vector *transferencias, Resumen_Pais **rp, int *contPaises);
 // Punto 6
 void GenerarArchivoParticipacion(Resumen_Continente *vec);
 int compararPorContinente(const void *a, const void *b);
 void MostrarParticipacionDesdeArchivo();
 // Punto 7
-void GenerarArchivoIntermedio(Transferencias *t, P_Continentes *pc, Intermedio_Arch *inter);
+void GenerarArchivoIntermedio(const Vector *transferencias, P_Continentes *pcParam, Intermedio_Arch *interParam);
 // Punto 8
 bool parsearIntermedio(char *linea, Intermedio_Arch *reg);
 int cmpPaisPromedio(const void *a, const void *b);
