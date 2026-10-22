@@ -1573,7 +1573,6 @@ void OpcionTotalesAnuales(const Vector *transf)
     destruirVector(&totales);
 }
 
-
 //==================================================================
 //  PUNTO 8: Promedio trimestral por pais y tipo de operacion
 //==================================================================
@@ -1891,10 +1890,112 @@ bool mostrarArchivoTexto(const char *nombArch)
     return true;
 }
 
-void Menu(){
+int cmpPromedioContinente(const void *a, const void *b)
+{
+    const PromedioContinente *p1 = (const PromedioContinente *)a;
+    const PromedioContinente *p2 = (const PromedioContinente *)b;
+    int cmpCont;
 
+    //Orden por año ascendente
+    if (p1->anio != p2->anio)
+        return p1->anio - p2->anio;
 
+    //Orden alfabetico de los continentes
+    cmpCont = compararPorContinente(p1->continente, p2->continente);
+    if (cmpCont != 0)
+        return cmpCont;
 
+    //Orden por operacion, primero 'C' despues 'D'
+    return strcmp(p1->operacion, p2->operacion);
+}
 
+bool cargarPromediosContinente(const char *nombArch, Vector *promedios)
+{
+    FILE *pf = fopen(nombArch, "r");
+    Intermedio_Arch reg;
+    PromedioContinente clave;
+    PromedioContinente *prom;
+    char linea[TAMLINEA];
+
+    if(pf == NULL)
+    {
+        printf("No se pudo leer el archivo %s", nombArch);
+        return 0;
+    }
+
+    while (fgets(linea, sizeof(linea), pf))
+    {
+        if (*linea != '\n' && *linea != '\r')
+        {
+            if (parsearIntermedio(linea, &reg) && (*reg.operacion == 'C' || *reg.operacion == 'D'))
+            {
+                if (reg.monto > 0)
+                {
+                    clave.anio = reg.anio;
+                    strncpy(clave.continente, reg.continente, sizeof(clave.continente) - 1);
+                    *(clave.continente + sizeof(clave.continente) - 1) = '\0';
+                    strncpy(clave.operacion, reg.operacion, sizeof(clave.operacion) - 1);
+                    *(clave.operacion + sizeof(clave.operacion) - 1) = '\0';
+                    clave.suma_monto = 0.0;
+                    clave.cant_trimestres = 0;
+
+                    prom = (PromedioContinente *)obtenerOInsertarEnOrden(promedios, &clave, cmpPromedioContinente);
+                    if (!prom)
+                    {
+                        fclose(pf);
+                        return 0;
+                    }
+
+                    prom->suma_monto += reg.monto;
+                    prom->cant_trimestres += 1;
+                }
+            }
+        }
+    }
+
+    fclose(pf);
+    return 1;
+}
+
+void imprimirPromediosContinente(const Vector *promedios)
+{
+    const PromedioContinente *ini = (const PromedioContinente *)promedios->vec;
+    const PromedioContinente *fin = ini + promedios->cantElem;
+    double promedio;
+
+    printf("\n%-6s %-15s %-10s %12s %16s %10s\n",
+           "ANIO", "CONTINENTE", "OPERACION", "suma_monto", "cant_trimestres", "PROMEDIO");
+    printf("----------------------------------------------------------------------------\n");
+
+    while (ini < fin)
+    {
+        if (ini->cant_trimestres > 0)
+            promedio = ini->suma_monto / ini->cant_trimestres;
+        else
+            promedio = 0.0;
+
+        printf("%-6d %-15s %-10s %12.2f %16d %10.2f\n",ini->anio, ini->continente, ini->operacion, ini->suma_monto, ini->cant_trimestres, promedio);
+
+        ini++;
+    }
+    printf("\n");
+}
+
+void OpcionPromedioContinentePorAnio(void)
+{
+    Vector promedios;
+
+    crearVector(&promedios, sizeof(PromedioContinente), 64);
+
+    if (!cargarPromediosContinente("transferencias_base_larga.csv", &promedios))
+        printf("\nGenerelo con la opcion 7.");
+    else
+        imprimirPromediosContinente(&promedios);
+
+    destruirVector(&promedios);
+}
+
+void Menu()
+{
 
 }

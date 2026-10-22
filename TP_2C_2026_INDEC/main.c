@@ -83,7 +83,7 @@ int main()
         break;
 
     case 9:
-
+        OpcionPromedioContinentePorAnio();
         break;
 
     case 10:
