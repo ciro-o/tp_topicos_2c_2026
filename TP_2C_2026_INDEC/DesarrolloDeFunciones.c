@@ -72,15 +72,10 @@ void MostrarArchivoPorPais(Transferencias *t){
             }
         }
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
-               &t[aux].anio,
-               &t[aux].trimestre,
-               t[aux].p.pais_cod,
-               t[aux].p.pais_desc,
-               t[aux].operacion,
-               &t[aux].monto);
+        if(parsear(linea, &t[aux])){
+            aux++;
+        }
 
-        aux++;
     }
 
     int k;
@@ -543,15 +538,10 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
         }
 
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
-               &t[aux].anio,
-               &t[aux].trimestre,
-               t[aux].p.pais_cod,
-               t[aux].p.pais_desc,
-               t[aux].operacion,
-               &t[aux].monto);
+        if(parsear(linea, &t[aux])){
+            aux++;
+        }
 
-        aux++;
     }
 
     //ahora tengo que contar los montos por vector de cada pais, comparando el code pais
@@ -595,9 +585,11 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
 
         if(t[k].operacion[0] == 'C')
             m[i].monto += t[k].monto;
-
+        }
         if(t[k].operacion[0] == 'D')
             m[i].monto += t[k].monto;
+        }
+
     }
 
     //despues ordeno el vector
@@ -1995,7 +1987,79 @@ void OpcionPromedioContinentePorAnio(void)
     destruirVector(&promedios);
 }
 
-void Menu()
-{
+void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
+          Vector *transferencias, Resumen_Pais **rp, int *contPaises,
+          P_Continentes *pc, Intermedio_Arch *inter){
+
+
+            int opcion;
+
+    do
+    {
+        printf("1. Totales por país.\n"
+               "2. Totales por continente.\n"
+               "3. Saldo trimestral por país.\n"
+               "4. Totales anuales y variación interanual.\n"
+               "5. Ranking de países.\n"
+               "6. Participación porcentual por continente.\n"
+               "7. Generación del archivo intermedio transferencias_base_larga.csv.\n"
+               "8. Promedio trimestral por país.\n"
+               "9. Promedio trimestral por continente, operación y año.\n"
+               "10. Salir.\n");
+
+        printf("Elija una opcion: ");
+        scanf("%d", &opcion);
+
+        switch (opcion)
+        {
+        case 1:
+            OrdenarPorMonto(t, m);
+            break;
+
+        case 2:
+            procesarContinentes(vec);
+            mostrarVec(vec);
+            break;
+
+        case 3:
+            OpcionSaldoTrimestralPorPais(transferencias);
+            break;
+
+        case 4:
+            OpcionTotalesAnuales(transferencias);
+            break;
+
+        case 5:
+            Ranking_pais(t, rp, contPaises);
+            break;
+
+        case 6:
+            procesarContinentes(vec);
+            GenerarArchivoParticipacion(vec);
+            MostrarParticipacionDesdeArchivo();
+            break;
+
+        case 7:
+            GenerarArchivoIntermedio(t, pc, inter);
+            break;
+
+        case 8:
+            OpcionPromedioTrimestralPorPais();
+            break;
+
+        case 9:
+            OpcionPromedioContinentePorAnio();
+            break;
+
+        case 10:
+            break;
+
+        default:
+            printf("Opcion invalida.\n");
+            break;
+        }
+
+    } while (opcion != 10);
+
 
 }

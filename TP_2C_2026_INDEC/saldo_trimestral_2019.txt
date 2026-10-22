@@ -1,0 +1,154 @@
+SALDO TRIMESTRAL POR PAIS - ANIO 2019
+(en millones de dolares: creditos - debitos)
+
+Pais                                                T1          T2          T3          T4
+------------------------------------------------------------------------------------------
+Afganistán                                        0.00        0.00        0.02        0.00
+Alemania                                          0.64        1.19        1.14        2.09
+Andorra                                           0.00        0.00        0.00       -0.01
+Angola                                            0.01        0.01        0.01        0.03
+Anguila                                           0.00        0.01        0.00        0.00
+Antigua y Barbuda                                 0.00        0.00        0.00        0.00
+Antillas Neerlandesas                             0.00        0.00        0.00        0.00
+Arabia Saudita                                    0.01        0.01        0.03        0.01
+Armenia                                          -0.01        0.00       -0.01       -0.01
+Aruba                                             0.00        0.00        0.00        0.00
+Australia                                         0.21        0.49        0.42        0.71
+Austria                                           0.00        0.01        0.00        0.02
+Azerbaiyán                                        0.00        0.00        0.00        0.00
+Bahamas                                           0.00        0.00        0.00        0.00
+Bahrein                                           0.01        0.00        0.01        0.00
+Bangladesh                                       -0.32        0.00       -0.19       -0.08
+Barbados                                          0.00        0.00        0.00        0.00
+Belarús                                           0.00        0.00        0.00        0.00
+Belice                                            0.00        0.00        0.00        0.00
+Benin                                            -0.06        0.00       -0.01       -0.01
+Bermudas                                          0.00        0.00        0.00        0.00
+Bolivia                                          -7.44       -6.65       -8.01       -7.01
+Brasil                                           -2.09        0.11       -0.51        6.93
+Bulgaria                                         -0.01        0.00        0.00        0.00
+Burkina Faso                                     -0.01        0.00       -0.01        0.00
+Bélgica                                           0.25        0.13        0.33        0.51
+Cabo Verde                                        0.00        0.00        0.00        0.00
+Camboya                                           0.01        0.01        0.01        0.01
+Camerún                                          -0.02        0.01       -0.01       -0.03
+Canadá                                            0.96        1.62        1.62        1.90
+Chile                                             2.24        2.90        5.05        7.17
+China                                            -3.42       -1.54       -2.31       -0.76
+Chipre                                            0.00        0.00        0.00        0.19
+Colombia                                         -9.36      -10.70      -12.26       -6.34
+Corea del Sur                                     0.00        0.01        0.02        0.01
+Costa Rica                                        0.08        0.11        0.13        0.22
+Costa de Marfil                                  -0.01       -0.01       -0.02       -0.01
+Croacia                                          -0.01       -0.01       -0.01        0.00
+Cuba                                             -0.33       -0.45       -0.47        0.00
+Curaçao                                           0.01        0.01        0.01        0.02
+Dinamarca                                        -0.04       -0.04       -0.01        0.01
+Ecuador                                           1.26       -0.19        3.04        2.81
+Egipto                                            0.00        0.00        0.00        0.00
+El Salvador                                       0.12        0.21        0.25        0.29
+Emiratos Árabes Unidos                            0.28        0.34        0.37        0.44
+Eslovenia                                        -0.01        0.00        0.00        0.01
+España                                            4.44        6.11        8.69       13.17
+Estados Unidos                                   19.89       21.09       29.90       38.04
+Estonia                                           0.00        0.00        0.00        0.01
+Filipinas                                        -0.11       -0.14       -0.03       -0.01
+Finlandia                                         0.01        0.00        0.00        0.00
+Francia                                           0.79        1.39        1.45        3.04
+Georgia                                           0.00       -0.01        0.00        0.00
+Ghana                                            -0.24       -0.20       -0.22       -0.21
+Gibraltar                                         0.00        0.00        0.00        0.00
+Granada                                           0.00        0.00        0.00        0.00
+Grecia                                            0.00        0.00        0.00        0.01
+Guam                                             -0.09        0.00        0.00        0.00
+Guatemala                                         0.11        0.17        0.10        0.25
+Guinea                                            0.00        0.00        0.00        0.00
+Guinea Ecuatorial                                 0.01        0.00        0.00        0.00
+Haití                                             0.02        0.03        0.20        0.24
+Honduras                                          0.00        0.18        0.21        0.26
+Hong Kong                                         0.02        0.02        0.01        0.01
+Hungría                                           0.00        0.01        0.01        0.02
+India                                            -0.27       -0.32       -0.27       -0.21
+Indonesia                                        -0.03       -0.03       -0.02       -0.09
+Irlanda                                          -0.03       -0.02       -0.04        0.21
+Isla de Man                                       0.00        0.00        0.00        0.01
+Islandia                                          0.00        0.00        0.00        0.00
+Islas Caimán                                      0.01        0.00        0.00        0.00
+Islas Cocos                                       0.00        0.00        0.00        0.00
+Islas Vírgenes Británicas                         0.00        0.00        0.00        0.00
+Islas Vírgenes de Estados Unidos                  0.00        0.00        0.00        0.00
+Islas ultramarinas de los Estados Unidos          0.00        0.00        0.00        0.00
+Israel                                           -0.03        0.04        0.09        0.37
+Italia                                            1.31        1.54        1.92        3.10
+Jamaica                                           0.00        0.00        0.00        0.00
+Japón                                             0.22        0.33        0.41        0.44
+Jersey                                            0.00        0.00        0.00        0.01
+Kazajstán                                         0.00        0.00        0.00        0.00
+Kenia                                             0.00        0.00        0.00        0.00
+Kuwait                                            0.00        0.00        0.00        0.00
+Letonia                                           0.00        0.00        0.00        0.00
+Liberia                                           0.00        0.01        0.01        0.00
+Liechtenstein                                     0.00        0.00        0.00        0.01
+Lituania                                          0.00        0.00        0.00        0.00
+Luxemburgo                                        0.03        0.03        0.02        0.03
+Líbano                                            0.00       -0.01        0.01        0.01
+Macao                                             0.00        0.00        0.00        0.00
+Malasia                                           0.00       -0.01        0.00        0.00
+Maldivas                                          0.00        0.00        0.00        0.01
+Malta                                             0.00        0.00        0.00        0.00
+Malí                                              0.00        0.00        0.00        0.00
+Marruecos                                        -0.01        0.00        0.00        0.00
+Mongolia                                          0.00        0.00        0.00        0.00
+Montenegro                                        0.00        0.00        0.00        0.00
+Mozambique                                        0.00        0.00       -0.01        0.00
+México                                            0.22        0.70        0.87        1.56
+Mónaco                                            0.00        0.00        0.00        0.01
+Nauru                                             0.00        0.00        0.00        0.00
+Nepal                                             0.00        0.00        0.00        0.00
+Nicaragua                                        -0.11       -0.01        0.00        0.00
+Nigeria                                          -0.35       -0.41       -0.39       -0.27
+Noruega                                           0.00       -0.01        0.16        0.02
+Nueva Caledonia                                   0.00        0.01        0.00        0.01
+Nueva Zelanda                                     0.07        0.14        0.14        0.01
+Níger                                             0.00        0.00        0.00        0.00
+Omán                                              0.01        0.00        0.00        0.00
+Pakistán                                         -0.01        0.00       -0.13        0.00
+Palestina                                         0.00        0.00        0.00        0.00
+Panamá                                            0.46        0.73        0.74        1.13
+Paraguay                                        -25.91      -38.06      -38.05      -22.39
+Países Bajos                                      0.09        0.24        0.15        0.55
+Perú                                            -11.39        2.15      -10.09      -10.73
+Polonia                                          -0.01       -0.01        0.00        0.01
+Portugal                                          0.11        0.16        0.07        0.13
+Puerto Rico                                       0.00        0.01       -0.01        0.01
+Qatar                                             0.11        0.00        0.01        0.02
+Reino Unido                                       3.35       -1.49        4.07        5.33
+República Checa                                  -0.01        0.00        0.00        0.00
+República Democrática del Congo                  -0.97        0.00        0.00        0.00
+República Dominicana                             -2.64       -3.41       -3.44       -2.80
+República del Congo                               0.00        0.00        0.00        0.00
+Reunión                                           0.00        0.00        0.00        0.00
+Rumania                                           0.00       -0.01       -0.01        0.00
+Rusia                                             0.06        0.09        0.15        0.40
+San Vicente y las Granadinas                      0.00        0.00        0.00        0.00
+Santo Tomé y Príncipe                             0.00        0.00        0.00        0.01
+Senegal                                          -1.24       -0.67       -0.91       -0.96
+Serbia                                            0.00        0.00        0.00        0.00
+Sierra Leona                                      0.00        0.00        0.00        0.00
+Singapur                                          0.01        0.01        0.00        0.01
+Sudáfrica                                        -0.01        0.00        0.01        0.01
+Suecia                                            0.20        0.27        0.32        0.39
+Suiza                                             0.78        1.08        1.14        1.59
+Surinam                                          -0.01        0.00        0.00        0.01
+Tailandia                                         0.00       -0.11       -0.01        0.00
+Taiwan                                            0.00        0.01       -0.01        0.00
+Tanzania                                          0.00        0.00        0.00        0.00
+Togo                                             -0.02       -0.01       -0.01        0.00
+Trinidad y Tobago                                 0.00        0.00        0.00        0.00
+Turquía                                          -0.02       -0.12       -0.02       -0.07
+Túnez                                             0.00        0.00        0.00        0.00
+Ucrania                                          -0.13       -0.17       -0.18       -0.11
+Uganda                                           -0.01        0.00        0.00        0.00
+Uruguay                                           0.59        1.66        1.47        2.14
+Venezuela                                         0.06        0.12        0.21        0.11
+Viet Nam                                          0.00        0.00        0.00        0.00
