@@ -582,17 +582,15 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
             m[i].monto = 0;
 
         }
+
         if(t[k].operacion[0] == 'C')
-        {
             m[i].monto += t[k].monto;
         }
         if(t[k].operacion[0] == 'D')
-        {
             m[i].monto += t[k].monto;
         }
 
     }
-
 
     //despues ordeno el vector
     OrdenMonto maux;
@@ -617,10 +615,6 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
                m[j].pais_desc,
                m[j].monto);
     }
-
-
-
-
 }
 
 bool parsear(char *linea, Transferencias *reg)
@@ -784,6 +778,20 @@ void cargarVec(Vector *v, char *nombArch)
     fclose(fp);
 }
 
+int cmpResumenCreditoDesc(const void *a, const void *b)
+{
+    const Resumen_Continente *r1 = (const Resumen_Continente *)a;
+    const Resumen_Continente *r2 = (const Resumen_Continente *)b;
+
+    if (r1->total_credito < r2->total_credito)
+        return 1;
+    if (r1->total_credito > r2->total_credito)
+        return -1;
+
+    // En caso de empate en creditos, desempata alfabeticamente
+    return strcmp(r1->continente, r2->continente);
+}
+
 P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc)
 {
     char *actual = (char *)v->vec;
@@ -794,9 +802,7 @@ P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc)
     {
         p = (P_Continentes *)actual;
         if (strcmp(p->pais_desc, pais_desc) == 0)
-        {
             return p;
-        }
         actual += v->tamElem;
     }
 
@@ -809,9 +815,7 @@ Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continen
     for (i = inicio; i < fin; i++)
     {
         if (strcmp(i->continente, continente) == 0)
-        {
             return i;
-        }
     }
     return NULL;
 }
@@ -825,11 +829,7 @@ void mostrarVec(Resumen_Continente *vec)
     printf("-------------------------------------------------------------\n");
     for (inicio = vec; inicio < fin; inicio++)
     {
-        printf("%-15s %12ld %15.2f %15.2f\n",
-               inicio->continente,
-               inicio->registros,
-               inicio->total_credito,
-               inicio->total_debito);
+        printf("%-15s %12ld %15.2f %15.2f\n", inicio->continente, inicio->registros, inicio->total_credito, inicio->total_debito);
     }
 }
 
@@ -843,7 +843,7 @@ void procesarContinentes(Resumen_Continente *vec)
         return;
     }
 
-    crearVector(&v,sizeof(P_Continentes),10);
+    crearVector(&v, sizeof(P_Continentes), 10);
     cargarVec(&v, "paises_continentes.csv");
     inicializarResumen(vec);
 
@@ -873,6 +873,8 @@ void procesarContinentes(Resumen_Continente *vec)
 
     destruirVector(&v);
     fclose(pf);
+
+    ordenarInsercion(vec, 7, sizeof(Resumen_Continente), cmpResumenCreditoDesc);
 }
 
 void Ranking_pais(Transferencias *t, Resumen_Pais **rp, int *contPaises){
@@ -1142,7 +1144,7 @@ void MostrarParticipacionDesdeArchivo()
 
     fread(&reg, sizeof(Participacion_Continente), 7, pf);
 
-    qsort(reg, 7, sizeof(Participacion_Continente), compararPorContinente);
+    ordenarInsercion(reg, 7, sizeof(Participacion_Continente), compararPorContinente);
 
     printf("%-18s %8s %8s\n", "CONTINENTE", "C", "D");
     printf("------------------------------------\n");
