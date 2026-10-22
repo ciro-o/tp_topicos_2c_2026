@@ -213,6 +213,8 @@ bool cargarPromediosContinente(const char *nombArch, Vector *promedios);
 void imprimirPromediosContinente(const Vector *promedios);
 void OpcionPromedioContinentePorAnio(void);
 // Punto 10
-void Menu();
+void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
+          Vector *transferencias, Resumen_Pais **rp, int *contPaises,
+          P_Continentes *pc, Intermedio_Arch *inter);
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED
