@@ -538,10 +538,8 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
         }
 
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if(parsear(linea, &t[aux])){
+        if(parsear(linea, &t[aux]))
             aux++;
-        }
-
     }
 
     //ahora tengo que contar los montos por vector de cada pais, comparando el code pais
@@ -585,21 +583,22 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
 
         if(t[k].operacion[0] == 'C')
             m[i].monto += t[k].monto;
-        }
         if(t[k].operacion[0] == 'D')
             m[i].monto += t[k].monto;
-        }
 
     }
 
     //despues ordeno el vector
     OrdenMonto maux;
-    for(k=0; k < capacidad; k++){
-       for(i=0; i < capacidad -1 ; i++){
-        if(m[i].monto < m[i+1].monto){
-            maux = m[i+1];
-            m[i+1] = m[i];
-            m[i] = maux;
+    for(k=0; k < capacidad; k++)
+    {
+       for(i=0; i < capacidad -1 ; i++)
+        {
+            if(m[i].monto < m[i+1].monto)
+            {
+                maux = m[i+1];
+                m[i+1] = m[i];
+                m[i] = maux;
             }
         }
     }
