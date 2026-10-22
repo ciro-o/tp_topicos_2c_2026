@@ -172,6 +172,7 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais **rp);
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
 // Punto 2
+int cmpResumenCreditoDesc(const void *a, const void *b);
 void procesarContinentes(Resumen_Continente *vec);
 P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc);
 Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente);
