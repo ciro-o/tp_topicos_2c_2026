@@ -72,15 +72,10 @@ void MostrarArchivoPorPais(Transferencias *t){
             }
         }
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
-               &t[aux].anio,
-               &t[aux].trimestre,
-               t[aux].p.pais_cod,
-               t[aux].p.pais_desc,
-               t[aux].operacion,
-               &t[aux].monto);
+        if(parsear(linea, &t[aux])){
+            aux++;
+        }
 
-        aux++;
     }
 
     int k;
@@ -543,15 +538,10 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
         }
 
         // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
-               &t[aux].anio,
-               &t[aux].trimestre,
-               t[aux].p.pais_cod,
-               t[aux].p.pais_desc,
-               t[aux].operacion,
-               &t[aux].monto);
+        if(parsear(linea, &t[aux])){
+            aux++;
+        }
 
-        aux++;
     }
 
     //ahora tengo que contar los montos por vector de cada pais, comparando el code pais
@@ -595,11 +585,11 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m){
         if(t[k].operacion[0] == 'C')
         {
             m[i].monto += t[k].monto;
-        };
+        }
         if(t[k].operacion[0] == 'D')
         {
             m[i].monto += t[k].monto;
-        };
+        }
 
     }
 

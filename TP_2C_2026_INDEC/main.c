@@ -13,6 +13,7 @@ int main()
     Resumen_Pais *rp = NULL;
     Resumen_Continente vec[7];
     Intermedio_Arch inter;
+    OrdenMonto m;
     P_Continentes pc;
     int contPaises;
 
@@ -47,8 +48,7 @@ int main()
     switch (opcion)
     {
     case 1:
-        MostrarArchivoPorPais(&t);
-        MostrarCantOperacionesPorPais(&t, &rp);
+        OrdenarPorMonto(&t, &m);
         break;
 
     case 2:
