@@ -193,13 +193,13 @@ bool acumularTotalesPorAnio(const Vector *transf, Vector *totales);
 void imprimirTotalesAnuales(const Vector *totales);
 void OpcionTotalesAnuales(const Vector *transf);
 // Punto 5
-void Ranking_pais(const Vector *transferencias, Resumen_Pais **rp, int *contPaises);
+void Ranking_pais(const Vector *transferencias, Resumen_Pais **rp, int *cantPaises);
 // Punto 6
 void GenerarArchivoParticipacion(Resumen_Continente *vec);
 int compararPorContinente(const void *a, const void *b);
 void MostrarParticipacionDesdeArchivo();
 // Punto 7
-void GenerarArchivoIntermedio(const Vector *transferencias, P_Continentes *pcParam, Intermedio_Arch *interParam);
+void GenerarArchivoIntermedio(const Vector *transferencias, P_Continentes *pc, Intermedio_Arch *inter);
 // Punto 8
 bool parsearIntermedio(char *linea, Intermedio_Arch *reg);
 int cmpPaisPromedio(const void *a, const void *b);
