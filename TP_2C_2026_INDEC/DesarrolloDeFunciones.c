@@ -500,7 +500,7 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
     int aux = 0;
     int capacidad = 1;
     char linea[256];
-    fgets(linea, sizeof(linea), file1);
+    //fgets(linea, sizeof(linea), file1);
     while (fgets(linea, sizeof(linea), file1))
     {
         // realloc si esta lleno
