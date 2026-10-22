@@ -842,7 +842,7 @@ void Ranking_pais(const Vector *transferencias, Resumen_Pais **rp, int *contPais
     // TERMINA: tengo todo el archivo leido en un vector
 
     // ordeno todo el archivo por pais, registro, credito y debito
-    for (int k = 0; k < aux - 1; k++)
+    for (k = 0; k < aux - 1; k++)
     {
         for (reg = t + 1; reg < t + aux; reg++)
         {
