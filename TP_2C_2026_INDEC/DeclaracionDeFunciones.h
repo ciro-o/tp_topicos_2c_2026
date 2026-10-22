@@ -128,6 +128,16 @@ typedef struct
     int trimestres[2]; //cantidad de trimestres con monto mayor que cero
 } PromedioPais;
 
+//Para el punto 9
+typedef struct
+{
+    int anio;
+    char continente[20];
+    char operacion[2];
+    double suma_monto;
+    int cant_trimestres;
+} PromedioContinente;
+
 //--------- Funciones ----------
 typedef void (*Accion)(void*);
 void parsearCont(char *linea, P_Continentes *reg);
@@ -198,7 +208,10 @@ bool cargarPromedios(const char *nombArch, Vector *promedios);
 void imprimirPromedios(const Vector *promedios);
 void OpcionPromedioTrimestralPorPais();
 // Punto 9
-
+int cmpPromedioContinente(const void *a, const void *b);
+bool cargarPromediosContinente(const char *nombArch, Vector *promedios);
+void imprimirPromediosContinente(const Vector *promedios);
+void OpcionPromedioContinentePorAnio(void);
 // Punto 10
 void Menu();
 
