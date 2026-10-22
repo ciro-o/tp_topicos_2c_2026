@@ -734,7 +734,7 @@ int cmpResumenCreditoDesc(const void *a, const void *b)
     if (r1->total_credito > r2->total_credito)
         return -1;
 
-    // En caso de empate en creditos, desempata alfabeticamente
+    
     return strcmp(r1->continente, r2->continente);
 }
 
