@@ -1898,7 +1898,7 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
 
     do
     {
-        printf("1. Totales por país.\n"
+        printf("\n\n1. Totales por país.\n"
                "2. Totales por continente.\n"
                "3. Saldo trimestral por país.\n"
                "4. Totales anuales y variación interanual.\n"
@@ -1907,7 +1907,7 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
                "7. Generación del archivo intermedio transferencias_base_larga.csv.\n"
                "8. Promedio trimestral por país.\n"
                "9. Promedio trimestral por continente, operación y año.\n"
-               "10. Salir.\n");
+               "10. Salir.\n\n");
 
         printf("Elija una opcion: ");
         scanf("%d", &opcion);
