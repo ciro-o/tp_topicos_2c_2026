@@ -457,7 +457,7 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
     file1 = fopen("paises_ordenado.txt", "r");
     if (file1 == NULL)
     {
-        printf("Archivo corrupto");
+        printf("Archivo corrupto\n");
         return;
     }
     t = malloc(sizeof(Transferencias));
@@ -1889,11 +1889,8 @@ void OpcionPromedioContinentePorAnio(void)
     destruirVector(&promedios);
 }
 
-void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
-          Vector *transferencias, Resumen_Pais **rp, int *contPaises,
-          P_Continentes *pc, Intermedio_Arch *inter)
+void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7], Vector *transferencias, Resumen_Pais **rp, int *contPaises, P_Continentes *pc, Intermedio_Arch *inter)
 {
-
     int opcion;
 
     do
