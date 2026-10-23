@@ -502,7 +502,9 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
     //---- primer registro todo cero -----
     strcpy(m[0].pais_cod, t[0].p.pais_cod);
     strcpy(m[0].pais_desc, t[0].p.pais_desc);
-    m[0].monto = 0;
+    m[0].total_credito = 0;
+    m[0].total_debito = 0;
+    m[0].registros = 0;
     //----- recorro los registros -----
     for (k = 0; k < aux; k++)
     {
@@ -526,13 +528,17 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
             }
             strcpy(m[i].pais_cod, t[estatico].p.pais_cod);
             strcpy(m[i].pais_desc, t[estatico].p.pais_desc);
-            m[i].monto = 0;
+            m[i].total_credito = 0;
+            m[i].total_debito = 0;
+            m[i].registros = 0;
         }
 
-        if (t[k].operacion[0] == 'C')
-            m[i].monto += t[k].monto;
-        if (t[k].operacion[0] == 'D')
-            m[i].monto += t[k].monto;
+        if (t[k].operacion[0] == 'C'){
+            m[i].total_credito += t[k].monto;
+            m[i].registros++;}
+        if (t[k].operacion[0] == 'D'){
+            m[i].total_debito += t[k].monto;
+            m[i].registros++;}
     }
 
     // despues ordeno el vector
@@ -541,7 +547,7 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
     {
         for (i = 0; i < capacidad - 1; i++)
         {
-            if (m[i].monto < m[i + 1].monto)
+            if (m[i].total_credito < m[i + 1].total_credito)
             {
                 maux = m[i + 1];
                 m[i + 1] = m[i];
@@ -556,10 +562,12 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
     int j;
     for (j = 0; j <= i; j++)
     {
-        printf("País: %s | Nombre Pais: %-34s | Total Monto: %10.2f\n",
+        printf("País: %s | Nombre Pais: %-34s | Registros: %ld |  Total Credito: %10.2f | Total Debito: %10.2f\n",
                m[j].pais_cod,
                m[j].pais_desc,
-               m[j].monto);
+               m[j].registros,
+               m[j].total_credito,
+               m[j].total_debito);
     }
 }
 

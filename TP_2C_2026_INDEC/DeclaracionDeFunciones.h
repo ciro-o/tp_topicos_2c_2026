@@ -81,6 +81,9 @@ typedef struct {
     char pais_cod[3];
     char pais_desc[64];
     float monto;
+    long registros;
+    double total_credito;
+    double total_debito;
 } OrdenMonto;
 
 //Para el punto 7
