@@ -451,124 +451,148 @@ void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais **rp)
 
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
 {
-
-    // aca tengo el archivo en el vector
     FILE *file1;
+    Transferencias *escribir;
+    Transferencias *finT;
+    Transferencias *actual;
+    Transferencias *base;
+    OrdenMonto *destino;
+    OrdenMonto *finM;
+    OrdenMonto *p1;
+    OrdenMonto maux;
+    char linea[256];
+    int capacidad;
+    int capM;
+    int offset;
+    int cantPaises;
+    int pasada;
+
     file1 = fopen("paises_ordenado.txt", "r");
     if (file1 == NULL)
     {
         printf("Archivo corrupto\n");
         return;
     }
-    t = malloc(sizeof(Transferencias));
+
+    capacidad = 1;
+    t = malloc(sizeof(Transferencias) * capacidad);
     if (t == NULL)
     {
         printf("No hay memoria");
+        fclose(file1);
         return;
     }
+    escribir = t;
+    finT = t + capacidad;
 
-    // Aca tengo el archivo en vector
-    int aux = 0;
-    int capacidad = 1;
-    char linea[256];
-    // fgets(linea, sizeof(linea), file1);
     while (fgets(linea, sizeof(linea), file1))
     {
-        // realloc si esta lleno
-        if (aux == capacidad)
+        if (escribir == finT)
         {
+            offset = escribir - t;
             capacidad++;
             t = realloc(t, sizeof(Transferencias) * capacidad);
             if (t == NULL)
             {
                 printf("No hay memoria");
+                fclose(file1);
                 return;
             }
+            escribir = t + offset;
+            finT = t + capacidad;
         }
 
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if (parsear(linea, &t[aux]))
-            aux++;
+        if (parsear(linea, escribir))
+            escribir++;
+    }
+    fclose(file1);
+
+    /* agrupo por pais */
+    capM = 1;
+    m = malloc(sizeof(OrdenMonto) * capM);
+    if (m == NULL)
+    {
+        printf("No hay memoria");
+        free(t);
+        return;
     }
 
-    // ahora tengo que contar los montos por vector de cada pais, comparando el code pais
+    destino = m;
+    base = t;
+    strcpy(destino->pais_cod, base->p.pais_cod);
+    strcpy(destino->pais_desc, base->p.pais_desc);
+    destino->total_credito = 0;
+    destino->total_debito = 0;
+    destino->registros = 0;
 
-    m = malloc(sizeof(OrdenMonto));
-    capacidad = 1;
-
-    int i = 0;
-    int estatico = 0;
-    int k = 0;
-    //---- primer registro todo cero -----
-    strcpy(m[0].pais_cod, t[0].p.pais_cod);
-    strcpy(m[0].pais_desc, t[0].p.pais_desc);
-    m[0].total_credito = 0;
-    m[0].total_debito = 0;
-    m[0].registros = 0;
-    //----- recorro los registros -----
-    for (k = 0; k < aux; k++)
+    for (actual = t; actual < escribir; actual++)
     {
-        if (strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
+        if (strcmp(base->p.pais_cod, actual->p.pais_cod) != 0)
         {
-            // Vacio, sumo afuera
-        }
-        else
-        {
-            i++;
-            estatico = k;
-            if (i == capacidad)
+            base = actual;
+            destino++;
+
+            if (destino == m + capM)
             {
-                capacidad++;
-                m = realloc(m, sizeof(OrdenMonto) * capacidad);
+                offset = destino - m;
+                capM++;
+                m = realloc(m, sizeof(OrdenMonto) * capM);
                 if (m == NULL)
                 {
                     printf("No hay memoria");
+                    free(t);
                     return;
                 }
+                destino = m + offset;
             }
-            strcpy(m[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy(m[i].pais_desc, t[estatico].p.pais_desc);
-            m[i].total_credito = 0;
-            m[i].total_debito = 0;
-            m[i].registros = 0;
+
+            strcpy(destino->pais_cod, base->p.pais_cod);
+            strcpy(destino->pais_desc, base->p.pais_desc);
+            destino->total_credito = 0;
+            destino->total_debito = 0;
+            destino->registros = 0;
         }
 
-        if (t[k].operacion[0] == 'C'){
-            m[i].total_credito += t[k].monto;
-            m[i].registros++;}
-        if (t[k].operacion[0] == 'D'){
-            m[i].total_debito += t[k].monto;
-            m[i].registros++;}
-    }
-
-    // despues ordeno el vector
-    OrdenMonto maux;
-    for (k = 0; k < capacidad; k++)
-    {
-        for (i = 0; i < capacidad - 1; i++)
+        if (actual->operacion[0] == 'C')
         {
-            if (m[i].total_credito < m[i + 1].total_credito)
+            destino->total_credito += actual->monto;
+            destino->registros++;
+        }
+        if (actual->operacion[0] == 'D')
+        {
+            destino->total_debito += actual->monto;
+            destino->registros++;
+        }
+    }
+    cantPaises = destino - m + 1;
+    finM = m + cantPaises;
+
+    /* ordeno de mayor a menor segun total_credito */
+    for (pasada = 0; pasada < cantPaises; pasada++)
+    {
+        for (p1 = m; p1 < finM - 1; p1++)
+        {
+            if (p1->total_credito < (p1 + 1)->total_credito)
             {
-                maux = m[i + 1];
-                m[i + 1] = m[i];
-                m[i] = maux;
+                maux = *(p1 + 1);
+                *(p1 + 1) = *p1;
+                *p1 = maux;
             }
         }
     }
 
-    // por ultimo imprimo el vector ordenado
-
-    // imprimo el vector
-    int j;
-    for (j = 0; j <= i; j++)
+    for (p1 = m; p1 < finM; p1++)
     {
         printf("País: %s | Nombre Pais: %-34s | Registros: %ld |  Total Credito: %10.2f | Total Debito: %10.2f\n",
-               m[j].pais_cod,
-               m[j].pais_desc,
-               m[j].registros,
-               m[j].total_credito,
-               m[j].total_debito);
+               p1->pais_cod,
+               p1->pais_desc,
+               p1->registros,
+               p1->total_credito,
+               p1->total_debito);
     }
+
+    free(t);
+    free(m);
 }
 
 bool parsear(char *linea, Transferencias *reg)
