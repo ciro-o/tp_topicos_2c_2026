@@ -1,33 +1,125 @@
 #include "DeclaracionDeFunciones.h"
 
-void MostrarArchivo(Transferencias *t)
+bool parsear(char *linea, Transferencias *reg)
 {
+    char *act;
 
-    FILE *file1 = fopen("transferencias_personales_clean.csv", "r");
-    if (file1 == NULL)
-    {
-        printf("Error al abrir archivo\n");
-        return;
-    }
+    act = strchr(linea, '\n');
+    if (act)
+        *act = '\0';
+    act = strchr(linea, '\r');
+    if (act)
+        *act = '\0';
 
-    char linea[256];
-    fgets(linea, sizeof(linea), file1);
-    while (fgets(linea, sizeof(linea), file1))
-    {
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        sscanf(linea, "%d;%d;%2s;%64[^;];%1s;%f",
-               &t->anio,
-               &t->trimestre,
-               t->p.pais_cod,
-               t->p.pais_desc,
-               t->operacion,
-               &t->monto);
+    act = strrchr(linea, SEPARADOR);
+    if (!act || sscanf(act + 1, "%f", &reg->monto) != 1)
+        return false;
+    *act = '\0';
 
-        printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
-               t->anio, t->trimestre, t->p.pais_cod, t->p.pais_desc, t->operacion, t->monto);
-    }
+    act = strrchr(linea, SEPARADOR);
+    if (!act)
+        return false;
+    *reg->operacion = *(act + 1);
+    *(reg->operacion + 1) = '\0';
+    *act = '\0';
 
-    fclose(file1);
+    act = strrchr(linea, SEPARADOR);
+    if (!act)
+        return false;
+    strncpy(reg->p.pais_desc, act + 1, sizeof(reg->p.pais_desc) - 1);
+    reg->p.pais_desc[sizeof(reg->p.pais_desc) - 1] = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act)
+        return false;
+    strncpy(reg->p.pais_cod, act + 1, sizeof(reg->p.pais_cod) - 1);
+    reg->p.pais_cod[sizeof(reg->p.pais_cod) - 1] = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act || sscanf(act + 1, "%d", &reg->trimestre) != 1)
+        return false;
+    *act = '\0';
+
+    return sscanf(linea, "%d", &reg->anio) == 1;
+}
+
+void parsearCont(char *linea, P_Continentes *reg)
+{
+    char *act;
+
+    act = strchr(linea, '\n');
+    if (act)
+        *act = '\0';
+    act = strchr(linea, '\r');
+    if (act)
+        *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    strncpy(reg->continente, act + 1, sizeof(reg->continente) - 1);
+    *(reg->continente + sizeof(reg->continente) - 1) = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    strncpy(reg->pais_desc, act + 1, sizeof(reg->pais_desc) - 1);
+    *(reg->pais_desc + sizeof(reg->pais_desc) - 1) = '\0';
+    *act = '\0';
+
+    strncpy(reg->pais_cod, linea, sizeof(reg->pais_cod) - 1);
+    *(reg->pais_cod + sizeof(reg->pais_cod) - 1) = '\0';
+}
+
+bool parsearIntermedio(char *linea, Intermedio_Arch *reg)
+{
+    char *act;
+
+    act = strchr(linea, '\n');
+    if (act)
+        *act = '\0';
+    act = strchr(linea, '\r');
+    if (act)
+        *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act || sscanf(act + 1, "%lf", &reg->monto) != 1)
+        return false;
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act)
+        return false;
+    *reg->operacion = *(act + 1);
+    *(reg->operacion + 1) = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act)
+        return false;
+    strncpy(reg->continente, act + 1, sizeof(reg->continente) - 1);
+    reg->continente[sizeof(reg->continente) - 1] = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act)
+        return false;
+    strncpy(reg->pais_desc, act + 1, sizeof(reg->pais_desc) - 1);
+    reg->pais_desc[sizeof(reg->pais_desc) - 1] = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act)
+        return false;
+    strncpy(reg->pais_cod, act + 1, sizeof(reg->pais_cod) - 1);
+    reg->pais_cod[sizeof(reg->pais_cod) - 1] = '\0';
+    *act = '\0';
+
+    act = strrchr(linea, SEPARADOR);
+    if (!act || sscanf(act + 1, "%d", &reg->trimestre) != 1)
+        return false;
+    *act = '\0';
+
+    return sscanf(linea, "%d", &reg->anio) == 1;
 }
 
 void MostrarArchivoPorPais(const Vector *transferencias)
@@ -87,366 +179,7 @@ void MostrarArchivoPorPais(const Vector *transferencias)
                reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
     } */
     free(t);
-    
-}
 
-void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp)
-{
-
-    FILE *file1;
-    file1 = fopen("paises_ordenado.txt", "r");
-    if (file1 == NULL)
-    {
-        printf("Archivo corrupto");
-        return;
-    }
-    t = malloc(sizeof(Transferencias));
-    if (t == NULL)
-    {
-        printf("No hay memoria");
-        return;
-    }
-
-    // Aca tengo el archivo en vector
-    int aux = 0;
-    int capacidad = 1;
-    char linea[256];
-    fgets(linea, sizeof(linea), file1);
-    while (fgets(linea, sizeof(linea), file1))
-    {
-        // realloc si esta lleno
-        if (aux == capacidad)
-        {
-            capacidad++;
-            t = realloc(t, sizeof(Transferencias) * capacidad);
-            if (t == NULL)
-            {
-                printf("No hay memoria");
-                return;
-            }
-        }
-
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if (parsear(linea, &t[aux]))
-        {
-            aux++;
-        }
-    }
-
-    // creo el arch de todos los paises y sus montos
-
-    // ahora vuelvo a rp
-    *rp = malloc(sizeof(Resumen_Pais));
-    if (*rp == NULL)
-    {
-        printf("No hay memoria");
-        return;
-    }
-
-    int cap = 1;
-    int i = 0;
-    int estatico = 0;
-    int k = 0;
-    //---- primer registro todo cero -----
-    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
-    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
-    (*rp)[0].registros = 0;
-    (*rp)[0].total_credito = 0;
-    (*rp)[0].total_debito = 0;
-    //----- recorro los registros -----
-    for (k = 0; k < aux; k++)
-    {
-        if (strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
-        {
-            // Vacio, sumo afuera
-        }
-        else
-        {
-
-            i++;
-            estatico = k;
-
-            if (i == cap)
-            {
-                cap++;
-                *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
-                if (*rp == NULL)
-                {
-                    printf("No hay memoria");
-                    return;
-                }
-            }
-
-            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
-            (*rp)[i].registros = 0;
-            (*rp)[i].total_credito = 0;
-            (*rp)[i].total_debito = 0;
-        }
-
-        (*rp)[i].registros = (*rp)[i].registros + 1;
-        if (t[k].operacion[0] == 'C')
-        {
-            (*rp)[i].total_credito += t[k].monto;
-        };
-        if (t[k].operacion[0] == 'D')
-        {
-            (*rp)[i].total_debito += t[k].monto;
-        };
-    }
-
-    fclose(file1);
-    free(t);
-
-    // imprimo el vector
-    int j;
-    for (j = 0; j <= i; j++)
-    {
-        printf("País: %s | Nombre Pais: %-34s | Cant. Operaciones: %4ld | Total Credito: %10.2f | Total Debito: %10.2f\n",
-               (*rp)[j].pais_cod,
-               (*rp)[j].pais_desc,
-               (*rp)[j].registros,
-               (*rp)[j].total_credito,
-               (*rp)[j].total_debito);
-    }
-
-    free(*rp);
-}
-
-void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais **rp)
-{
-
-    FILE *file1;
-    file1 = fopen("paises_ordenado.txt", "r");
-    if (file1 == NULL)
-    {
-        printf("Archivo corrupto");
-        return;
-    }
-    t = malloc(sizeof(Transferencias));
-    if (t == NULL)
-    {
-        printf("No hay memoria");
-        return;
-    }
-
-    // Aca tengo el archivo en vector
-    int aux = 0;
-    int capacidad = 1;
-    char linea[256];
-    fgets(linea, sizeof(linea), file1);
-    while (fgets(linea, sizeof(linea), file1))
-    {
-        // realloc si esta lleno
-        if (aux == capacidad)
-        {
-            capacidad++;
-            t = realloc(t, sizeof(Transferencias) * capacidad);
-            if (t == NULL)
-            {
-                printf("No hay memoria");
-                return;
-            }
-        }
-
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if (parsear(linea, &t[aux]))
-        {
-            aux++;
-        }
-    }
-    // ahora vuelvo a rp
-    *rp = malloc(sizeof(Resumen_Pais));
-    if (*rp == NULL)
-    {
-        printf("No hay memoria");
-        return;
-    }
-
-    int cap = 1;
-    int i = 0;
-    int estatico = 0;
-    int k = 0;
-    //---- primer registro todo cero -----
-    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
-    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
-    (*rp)[0].registros = 0;
-    (*rp)[0].total_credito = 0;
-    (*rp)[0].total_debito = 0;
-    //----- recorro los registros -----
-    for (k = 0; k < aux; k++)
-    {
-        if (strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
-        {
-            // Vacio, sumo afuera
-        }
-        else
-        {
-
-            i++;
-            estatico = k;
-
-            if (i == cap)
-            {
-                cap++;
-                *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
-                if (*rp == NULL)
-                {
-                    printf("No hay memoria");
-                    return;
-                }
-            }
-
-            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
-            (*rp)[i].registros = 0;
-            (*rp)[i].total_credito = 0;
-            (*rp)[i].total_debito = 0;
-        }
-
-        (*rp)[i].registros = (*rp)[i].registros + 1;
-        if (t[k].operacion[0] == 'C')
-        {
-            (*rp)[i].total_credito += t[k].monto;
-        };
-        if (t[k].operacion[0] == 'D')
-        {
-            (*rp)[i].total_debito += t[k].monto;
-        };
-    }
-
-    fclose(file1);
-    free(t);
-
-    // imprimo el vector
-    int j;
-    for (j = 0; j <= i; j++)
-    {
-        printf("País: %s | Nombre Pais: %-34s | Total Debito: %10.2f\n",
-               (*rp)[j].pais_cod,
-               (*rp)[j].pais_desc,
-               (*rp)[j].total_debito);
-    }
-
-    free(*rp);
-}
-
-void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais **rp)
-{
-
-    FILE *file1;
-    file1 = fopen("paises_ordenado.txt", "r");
-    if (file1 == NULL)
-    {
-        printf("Archivo corrupto");
-        return;
-    }
-    t = malloc(sizeof(Transferencias));
-    if (t == NULL)
-    {
-        printf("No hay memoria");
-        return;
-    }
-
-    // Aca tengo el archivo en vector
-    int aux = 0;
-    int capacidad = 1;
-    char linea[256];
-    fgets(linea, sizeof(linea), file1);
-    while (fgets(linea, sizeof(linea), file1))
-    {
-        // realloc si esta lleno
-        if (aux == capacidad)
-        {
-            capacidad++;
-            t = realloc(t, sizeof(Transferencias) * capacidad);
-            if (t == NULL)
-            {
-                printf("No hay memoria");
-                return;
-            }
-        }
-
-        // parsear CSV: anio, trimestre, pais_cod, pais_des, operacion, monto
-        if (parsear(linea, &t[aux]))
-        {
-            aux++;
-        }
-    }
-    // ahora vuelvo a rp
-    *rp = malloc(sizeof(Resumen_Pais));
-    if (*rp == NULL)
-    {
-        printf("No hay memoria");
-        return;
-    }
-
-    int cap = 1;
-    int i = 0;
-    int estatico = 0;
-    int k = 0;
-    //---- primer registro todo cero -----
-    strcpy((*rp)[0].pais_cod, t[0].p.pais_cod);
-    strcpy((*rp)[0].pais_desc, t[0].p.pais_desc);
-    (*rp)[0].registros = 0;
-    (*rp)[0].total_credito = 0;
-    (*rp)[0].total_debito = 0;
-    //----- recorro los registros -----
-    for (k = 0; k < aux; k++)
-    {
-        if (strcmp(t[estatico].p.pais_cod, t[k].p.pais_cod) == 0)
-        {
-            // Vacio, sumo afuera
-        }
-        else
-        {
-
-            i++;
-            estatico = k;
-
-            if (i == cap)
-            {
-                cap++;
-                *rp = realloc(*rp, sizeof(Resumen_Pais) * cap);
-                if (*rp == NULL)
-                {
-                    printf("No hay memoria");
-                    return;
-                }
-            }
-
-            strcpy((*rp)[i].pais_cod, t[estatico].p.pais_cod);
-            strcpy((*rp)[i].pais_desc, t[estatico].p.pais_desc);
-            (*rp)[i].registros = 0;
-            (*rp)[i].total_credito = 0;
-            (*rp)[i].total_debito = 0;
-        }
-
-        (*rp)[i].registros = (*rp)[i].registros + 1;
-        if (t[k].operacion[0] == 'C')
-        {
-            (*rp)[i].total_credito += t[k].monto;
-        };
-        if (t[k].operacion[0] == 'D')
-        {
-            (*rp)[i].total_debito += t[k].monto;
-        };
-    }
-
-    fclose(file1);
-    free(t);
-
-    // imprimo el vector
-    int j;
-    for (j = 0; j <= i; j++)
-    {
-        printf("País: %s | Nombre Pais: %-34s | Total Credito: %10.2f\n",
-               (*rp)[j].pais_cod,
-               (*rp)[j].pais_desc,
-               (*rp)[j].total_credito);
-    }
-
-    free(*rp);
 }
 
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
@@ -595,76 +328,6 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
     free(m);
 }
 
-bool parsear(char *linea, Transferencias *reg)
-{
-    char *act;
-
-    act = strchr(linea, '\n');
-    if (act)
-        *act = '\0';
-    act = strchr(linea, '\r');
-    if (act)
-        *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act || sscanf(act + 1, "%f", &reg->monto) != 1)
-        return false;
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act)
-        return false;
-    *reg->operacion = *(act + 1);
-    *(reg->operacion + 1) = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act)
-        return false;
-    strncpy(reg->p.pais_desc, act + 1, sizeof(reg->p.pais_desc) - 1);
-    reg->p.pais_desc[sizeof(reg->p.pais_desc) - 1] = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act)
-        return false;
-    strncpy(reg->p.pais_cod, act + 1, sizeof(reg->p.pais_cod) - 1);
-    reg->p.pais_cod[sizeof(reg->p.pais_cod) - 1] = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act || sscanf(act + 1, "%d", &reg->trimestre) != 1)
-        return false;
-    *act = '\0';
-
-    return sscanf(linea, "%d", &reg->anio) == 1;
-}
-
-void parsearCont(char *linea, P_Continentes *reg)
-{
-    char *act;
-
-    act = strchr(linea, '\n');
-    if (act)
-        *act = '\0';
-    act = strchr(linea, '\r');
-    if (act)
-        *act = '\0';
-
-    act = strrchr(linea, ';');
-    strncpy(reg->continente, act + 1, sizeof(reg->continente) - 1);
-    *(reg->continente + sizeof(reg->continente) - 1) = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    strncpy(reg->pais_desc, act + 1, sizeof(reg->pais_desc) - 1);
-    *(reg->pais_desc + sizeof(reg->pais_desc) - 1) = '\0';
-    *act = '\0';
-
-    strncpy(reg->pais_cod, linea, sizeof(reg->pais_cod) - 1);
-    *(reg->pais_cod + sizeof(reg->pais_cod) - 1) = '\0';
-}
-
 void crearVector(Vector *v, size_t tamElem, int cap)
 {
     v->vec = (void *)malloc(tamElem * cap);
@@ -727,13 +390,6 @@ void insertarAlFinal(Vector *v, void *elem)
     v->cantElem++;
 }
 
-void vectorRecorrer(const Vector *v, Accion accion)
-{
-    void *ult = v->vec + (v->cantElem - 1) * v->tamElem;
-    for (void *i = v->vec; i <= ult; i += v->tamElem)
-        accion(i);
-}
-
 void cargarVec(Vector *v, char *nombArch)
 {
     FILE *fp = fopen(nombArch, "rt");
@@ -766,7 +422,7 @@ int cmpResumenCreditoDesc(const void *a, const void *b)
     if (r1->total_credito > r2->total_credito)
         return -1;
 
-    
+
     return strcmp(r1->continente, r2->continente);
 }
 
@@ -1361,7 +1017,7 @@ bool pedirAnio(int *anio)
     {
         // descarta el resto de la linea para no repetir siempre el mismo error
         while ((c = getchar()) != '\n' && c != EOF)
-            ;
+        {/* no hace nada: solo consume los caracteres sobrantes */}
         if (c == EOF)
             return false;
 
@@ -1371,7 +1027,7 @@ bool pedirAnio(int *anio)
     return true;
 }
 
-// Opcion 3 del menu: pide el anio, genera saldo_trimestral_<anio>.txt y muestra por pantalla el contenido de ese archivo
+// Opcion 3 del menu: pide el año, genera saldo_trimestral_<año>.txt y muestra por pantalla el contenido de ese archivo
 void OpcionSaldoTrimestralPorPais(const Vector *transf)
 {
     Vector saldos;
@@ -1506,58 +1162,6 @@ void OpcionTotalesAnuales(const Vector *transf)
 // Convierte una linea de transferencias_base_larga.csv (anio;trimestre;cod;pais;continente;operacion;monto)
 // en un registro. Corta los campos desde el final, asi acepta el codigo de pais vacio (Namibia).
 // Devuelve false si la linea no tiene el formato esperado.
-bool parsearIntermedio(char *linea, Intermedio_Arch *reg)
-{
-    char *act;
-
-    act = strchr(linea, '\n');
-    if (act)
-        *act = '\0';
-    act = strchr(linea, '\r');
-    if (act)
-        *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act || sscanf(act + 1, "%lf", &reg->monto) != 1)
-        return false;
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act)
-        return false;
-    *reg->operacion = *(act + 1);
-    *(reg->operacion + 1) = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act)
-        return false;
-    strncpy(reg->continente, act + 1, sizeof(reg->continente) - 1);
-    reg->continente[sizeof(reg->continente) - 1] = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act)
-        return false;
-    strncpy(reg->pais_desc, act + 1, sizeof(reg->pais_desc) - 1);
-    reg->pais_desc[sizeof(reg->pais_desc) - 1] = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act)
-        return false;
-    strncpy(reg->pais_cod, act + 1, sizeof(reg->pais_cod) - 1);
-    reg->pais_cod[sizeof(reg->pais_cod) - 1] = '\0';
-    *act = '\0';
-
-    act = strrchr(linea, ';');
-    if (!act || sscanf(act + 1, "%d", &reg->trimestre) != 1)
-        return false;
-    *act = '\0';
-
-    return sscanf(linea, "%d", &reg->anio) == 1;
-}
-
 // Compara dos PromedioPais por nombre de pais: mantiene el vector ordenado alfabeticamente mientras se acumula
 int cmpPaisPromedio(const void *a, const void *b)
 {
