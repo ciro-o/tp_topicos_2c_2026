@@ -9,6 +9,7 @@ int main()
     // UTILS
     Transferencias t;
     Vector transferencias;
+    Vector contientes;
     Resumen_Pais *rp = NULL;
     Resumen_Continente vec[7];
     Intermedio_Arch inter;
@@ -23,11 +24,22 @@ int main()
     {
         printf("Error al abrir transferencias_personales_clean.csv\n");
         destruirVector(&transferencias);
-        return 1;
+        return ERROR;
     }
 
-    Menu(&t, &m, vec, &transferencias, &rp, &contPaises, &pc, &inter);
+    crearVector(&contientes, sizeof(P_Continentes), 10);
+    if (!cargarContinentes(&contientes, "paises_continentes.csv"))
+    {
+        printf("Error al abrir paises_continentes.csv\n");
+        destruirVector(&transferencias);
+        destruirVector(&contientes);
+        return ERROR;
+    }
+
+    Menu(&t, &m, vec, &transferencias, &contientes, &rp, &contPaises, &pc, &inter);
 
     destruirVector(&transferencias);
+    destruirVector(&contientes);
+
     return 0;
 }
