@@ -5,6 +5,7 @@
 #define TAMLINEA 100
 #define ERROR -1
 #define CONTINENTES 7
+#define ESLETRA(x) (((x)>='A' && (x)<='Z')||((x)>='a' && (x)<='z') ? 1: 0)
 
 #include <stdio.h>
 #include <string.h>
@@ -52,15 +53,6 @@ typedef struct
 
 } Transferencias;
 
-//Para el punto 2
-typedef struct
-{
-    char continente[20];
-    long registros;
-    double total_credito;
-    double total_debito;
-} Resumen_Continente;
-
 typedef struct
 {
     void *vec;
@@ -69,7 +61,7 @@ typedef struct
     int cap;
 } Vector;
 
-//para el punto 1.3 que cuenta registros y
+//para el punto 1
 typedef struct
 {
     char pais_cod[3];
@@ -88,6 +80,31 @@ typedef struct
     double total_credito;
     double total_debito;
 } OrdenMonto;
+
+//Para el punto 2
+typedef struct
+{
+    char continente[20];
+    long registros;
+    double total_credito;
+    double total_debito;
+} Resumen_Continente;
+
+//Para el punto 3: acumulador de un pais para el anio pedido (un monto por trimestre)
+typedef struct
+{
+    P_Continentes p; //reutiliza la estructura del pais (codigo, nombre y continente)
+    double creditos[CANT_TRIMESTRES];
+    double debitos[CANT_TRIMESTRES];
+} SaldoPais;
+
+//Para el punto 4: acumulador de un anio (total de creditos y de debitos)
+typedef struct
+{
+    int anio;
+    double creditos;
+    double debitos;
+} TotalAnual;
 
 //Para el punto 7
 typedef struct
@@ -108,22 +125,6 @@ typedef struct
     char operacion[2];
     double monto;
 }Intermedio_Arch;
-
-//Para el punto 3: acumulador de un pais para el anio pedido (un monto por trimestre)
-typedef struct
-{
-    P_Continentes p; //reutiliza la estructura del pais (codigo, nombre y continente)
-    double creditos[CANT_TRIMESTRES];
-    double debitos[CANT_TRIMESTRES];
-} SaldoPais;
-
-//Para el punto 4: acumulador de un anio (total de creditos y de debitos)
-typedef struct
-{
-    int anio;
-    double creditos;
-    double debitos;
-} TotalAnual;
 
 //Para el punto 8: promedio trimestral de un pais por tipo de operacion ([0] = credito, [1] = debito)
 typedef struct
@@ -146,7 +147,6 @@ typedef struct
 } PromedioContinente;
 
 //--------- Funciones ----------
-typedef void (*Accion)(void*);
 void parsearCont(char *linea, P_Continentes *reg);
 bool parsear(char *linea, Transferencias *reg);
 
@@ -163,15 +163,14 @@ void crearVector(Vector *v, size_t tamElem, int cap);
 void destruirVector(Vector *v);
 bool redimensionar(Vector *v, size_t nuevaCap);
 void insertarAlFinal(Vector *v, void *elem);
-void vectorRecorrer( const Vector * v, Accion accion);
 
 //1) Leer archivos de operaciones (Transferencias personales)
 //2) Agrupar información por pais (por código de país capaz) (vector dinamico)
-void MostrarArchivoPorPais(const Vector *transferencias);
 //3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
 //4) Sumar el importe de todas las operaciones Debito (por código de país capaz) (vector dinamico)
 //5) Sumar el importe de todas las operaciones Credito (por código de país capaz) (vector dinamico)
 //6) Ordenar de mayor a menor según la columna monto
+void GenerarArchivoPorPais(const Vector *transferencias);
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
 // Punto 2
@@ -189,7 +188,6 @@ bool acumularSaldosPorPais(const Vector *transf, int anio, Vector *saldos);
 void imprimirSaldos(FILE *destino, const Vector *saldos, int anio);
 bool pedirAnio(int *anio);
 void OpcionSaldoTrimestralPorPais(const Vector *transf);
-
 // Punto 4
 int cmpTotalAnual(const void *a, const void *b);
 bool acumularTotalesPorAnio(const Vector *transf, Vector *totales);
