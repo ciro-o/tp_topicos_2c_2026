@@ -1,6 +1,7 @@
 #ifndef DECLARACIONDEFUNCIONES_H_INCLUDED
 #define DECLARACIONDEFUNCIONES_H_INCLUDED
 
+#define SEPARADOR ';'
 #define TAMLINEA 100
 #define ERROR -1
 
@@ -67,7 +68,7 @@ typedef struct
     int cap;
 } Vector;
 
-//para el punto 1.3 que cuenta registros y montos
+//para el punto 1.3 que cuenta registros y
 typedef struct
 {
     char pais_cod[3];
@@ -77,7 +78,8 @@ typedef struct
     double total_debito;
 } Resumen_Pais;
 
-typedef struct {
+typedef struct
+{
     char pais_cod[3];
     char pais_desc[64];
     float monto;
@@ -95,7 +97,8 @@ typedef struct
 } Participacion_Continente;
 
 //punto 7
-typedef struct{
+typedef struct
+{
     int anio;
     int trimestre;
     char pais_cod[3];
@@ -162,15 +165,11 @@ void insertarAlFinal(Vector *v, void *elem);
 void vectorRecorrer( const Vector * v, Accion accion);
 
 //1) Leer archivos de operaciones (Transferencias personales)
-void MostrarArchivo(Transferencias *t);
 //2) Agrupar información por pais (por código de país capaz) (vector dinamico)
 void MostrarArchivoPorPais(const Vector *transferencias);
 //3) Contar cantidad de operaciones por país agrupados (por código de país capaz) (vector dinamico)
-void MostrarCantOperacionesPorPais(Transferencias *t, Resumen_Pais **rp);
 //4) Sumar el importe de todas las operaciones Debito (por código de país capaz) (vector dinamico)
-void ImporteDebitoPorPais(Transferencias *t, Resumen_Pais **rp);
 //5) Sumar el importe de todas las operaciones Credito (por código de país capaz) (vector dinamico)
-void ImporteCreditoPorPais(Transferencias *t, Resumen_Pais **rp);
 //6) Ordenar de mayor a menor según la columna monto
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
@@ -217,8 +216,6 @@ bool cargarPromediosContinente(const char *nombArch, Vector *promedios);
 void imprimirPromediosContinente(const Vector *promedios);
 void OpcionPromedioContinentePorAnio(void);
 // Punto 10
-void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],
-          Vector *transferencias, Resumen_Pais **rp, int *contPaises,
-          P_Continentes *pc, Intermedio_Arch *inter);
+void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],Vector *transferencias, Resumen_Pais **rp, int *contPaises,P_Continentes *pc, Intermedio_Arch *inter);
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED
