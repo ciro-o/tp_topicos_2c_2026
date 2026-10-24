@@ -4,6 +4,7 @@
 #define SEPARADOR ';'
 #define TAMLINEA 100
 #define ERROR -1
+#define CONTINENTES 7
 
 #include <stdio.h>
 #include <string.h>
@@ -175,11 +176,11 @@ void OrdenarPorMonto(Transferencias *t, OrdenMonto *m);
 
 // Punto 2
 int cmpResumenCreditoDesc(const void *a, const void *b);
-void procesarContinentes(const Vector *transferencias, Resumen_Continente *vec);
+void procesarContinentes(const Vector *transferencias, Vector *v, Resumen_Continente *vec);
 P_Continentes *buscarPorPaisDesc(const Vector *v, const char *pais_desc);
 Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continente *fin, const char *continente);
 void inicializarResumen(Resumen_Continente *vec);
-void cargarVec(Vector *v, char *nombArch);
+bool cargarContinentes(Vector *v, char *nombArch);
 void mostrarVec(Resumen_Continente *vec);
 // Punto 3
 bool cargarTransferencias(Vector *v, const char *nombArch); //carga general del CSV principal: la usa main una sola vez
@@ -216,6 +217,6 @@ bool cargarPromediosContinente(const char *nombArch, Vector *promedios);
 void imprimirPromediosContinente(const Vector *promedios);
 void OpcionPromedioContinentePorAnio(void);
 // Punto 10
-void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],Vector *transferencias, Resumen_Pais **rp, int *contPaises,P_Continentes *pc, Intermedio_Arch *inter);
+void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7],Vector *transferencias, Vector *continentes, Resumen_Pais **rp, int *contPaises,P_Continentes *pc, Intermedio_Arch *inter);
 
 #endif // DECLARACIONDEFUNCIONES_H_INCLUDED

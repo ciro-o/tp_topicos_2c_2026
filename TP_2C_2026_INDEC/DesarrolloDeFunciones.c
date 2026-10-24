@@ -345,9 +345,9 @@ void crearVector(Vector *v, size_t tamElem, int cap)
 void inicializarResumen(Resumen_Continente *vec)
 {
     Resumen_Continente *r;
-    const char *nombres[7] = {"Americas", "Europe", "Oceania", "Asia", "Africa", "Antarctica", "Indeterminado"};
+    const char *nombres[CONTINENTES] = {"Americas", "Europe", "Oceania", "Asia", "Africa", "Antarctica", "Indeterminado"};
     int i;
-    for (i = 0; i < 7; i++)
+    for (i = 0; i < CONTINENTES; i++)
     {
         r = vec + i;
         strcpy(r->continente, *(nombres + i));
@@ -390,13 +390,13 @@ void insertarAlFinal(Vector *v, void *elem)
     v->cantElem++;
 }
 
-void cargarVec(Vector *v, char *nombArch)
+bool cargarContinentes(Vector *v, char *nombArch)
 {
     FILE *fp = fopen(nombArch, "rt");
     if (!fp)
     {
         printf("Error al abrir el archivo\n");
-        exit(ERROR);
+        return false;
     }
 
     char linea[TAMLINEA];
@@ -410,6 +410,7 @@ void cargarVec(Vector *v, char *nombArch)
     }
 
     fclose(fp);
+    return true;
 }
 
 int cmpResumenCreditoDesc(const void *a, const void *b)
@@ -457,7 +458,7 @@ Resumen_Continente *buscarEnResumen(Resumen_Continente *inicio, Resumen_Continen
 void mostrarVec(Resumen_Continente *vec)
 {
     Resumen_Continente *inicio;
-    Resumen_Continente *fin = vec + 7;
+    Resumen_Continente *fin = vec + CONTINENTES;
 
     printf("%-15s %12s %15s %15s\n", "CONTINENTE", "registros", "total_credito", "total_debito");
     printf("-------------------------------------------------------------\n");
@@ -467,16 +468,13 @@ void mostrarVec(Resumen_Continente *vec)
     }
 }
 
-void procesarContinentes(const Vector *transferencias, Resumen_Continente *vec)
+void procesarContinentes(const Vector *transferencias, Vector *v, Resumen_Continente *vec)
 {
-    Vector v;
     Transferencias *actual;
     Transferencias *fin;
     P_Continentes *pais_hallado;
     Resumen_Continente *resumen_hallado;
 
-    crearVector(&v, sizeof(P_Continentes), 10);
-    cargarVec(&v, "paises_continentes.csv");
     inicializarResumen(vec);
 
     actual = (Transferencias *)transferencias->vec;
@@ -484,9 +482,9 @@ void procesarContinentes(const Vector *transferencias, Resumen_Continente *vec)
 
     for (; actual < fin; actual++)
     {
-        pais_hallado = buscarPorPaisDesc(&v, actual->p.pais_desc);
+        pais_hallado = buscarPorPaisDesc(v, actual->p.pais_desc);
 
-        resumen_hallado = buscarEnResumen(vec, vec + 7, pais_hallado->continente);
+        resumen_hallado = buscarEnResumen(vec, vec + CONTINENTES, pais_hallado->continente);
 
         if (resumen_hallado != NULL)
         {
@@ -498,8 +496,7 @@ void procesarContinentes(const Vector *transferencias, Resumen_Continente *vec)
         }
     }
 
-    destruirVector(&v);
-    ordenarInsercion(vec, 7, sizeof(Resumen_Continente), cmpResumenCreditoDesc);
+    ordenarInsercion(vec, CONTINENTES, sizeof(Resumen_Continente), cmpResumenCreditoDesc);
 }
 
 void Ranking_pais(const Vector *transferencias, Resumen_Pais **rp, int *contPaises)
@@ -680,7 +677,7 @@ void GenerarArchivoParticipacion(Resumen_Continente *vec)
 {
     FILE *pf;
     Resumen_Continente *ini;
-    Resumen_Continente *fin = vec + 7;
+    Resumen_Continente *fin = vec + CONTINENTES;
     float total_c = 0;
     float total_d = 0;
     Participacion_Continente reg;
@@ -736,17 +733,17 @@ void MostrarParticipacionDesdeArchivo()
         return;
     }
 
-    Participacion_Continente reg[7];
+    Participacion_Continente reg[CONTINENTES];
     Participacion_Continente *pr = reg;
     int i;
 
-    fread(&reg, sizeof(Participacion_Continente), 7, pf);
+    fread(&reg, sizeof(Participacion_Continente), CONTINENTES, pf);
 
-    ordenarInsercion(reg, 7, sizeof(Participacion_Continente), compararPorContinente);
+    ordenarInsercion(reg, CONTINENTES, sizeof(Participacion_Continente), compararPorContinente);
 
     printf("%-18s %8s %8s\n", "CONTINENTE", "C", "D");
     printf("------------------------------------\n");
-    for (i = 0; i < 7; i++)
+    for (i = 0; i < CONTINENTES; i++)
     {
         printf("%-18s %8.2f %8.2f\n", pr->continente, pr->porc_credito, pr->porc_debito);
         pr++;
@@ -1525,7 +1522,7 @@ void OpcionPromedioContinentePorAnio(void)
     destruirVector(&promedios);
 }
 
-void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7], Vector *transferencias, Resumen_Pais **rp, int *contPaises, P_Continentes *pc, Intermedio_Arch *inter)
+void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[CONTINENTES], Vector *transferencias, Vector *continentes, Resumen_Pais **rp, int *contPaises, P_Continentes *pc, Intermedio_Arch *inter)
 {
     int opcion;
 
@@ -1553,7 +1550,7 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7], Vector *t
             break;
 
         case 2:
-            procesarContinentes(transferencias, vec);
+            procesarContinentes(transferencias, continentes,  vec);
             mostrarVec(vec);
             break;
 
@@ -1570,7 +1567,7 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[7], Vector *t
             break;
 
         case 6:
-            procesarContinentes(transferencias, vec);
+            procesarContinentes(transferencias, continentes, vec);
             GenerarArchivoParticipacion(vec);
             MostrarParticipacionDesdeArchivo();
             break;
