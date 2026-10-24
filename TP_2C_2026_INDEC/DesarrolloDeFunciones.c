@@ -122,7 +122,7 @@ bool parsearIntermedio(char *linea, Intermedio_Arch *reg)
     return sscanf(linea, "%d", &reg->anio) == 1;
 }
 
-void MostrarArchivoPorPais(const Vector *transferencias)
+void GenerarArchivoPorPais(const Vector *transferencias)
 {
 
     Transferencias *t;
@@ -171,15 +171,7 @@ void MostrarArchivoPorPais(const Vector *transferencias)
     }
 
     fclose(salida);
-
-    // printeo ordenado
-    /* for (reg = puntero; reg < puntero + aux; reg++)
-    {
-        printf("Año: %d | Trimestre: %d | País: %s | Nombre Pais: %s \t\t| Operación: %s | Monto: %.2f\n",
-               reg->anio, reg->trimestre, reg->p.pais_cod, reg->p.pais_desc, reg->operacion, reg->monto);
-    } */
     free(t);
-
 }
 
 void OrdenarPorMonto(Transferencias *t, OrdenMonto *m)
@@ -342,21 +334,6 @@ void crearVector(Vector *v, size_t tamElem, int cap)
     v->cap = cap;
 }
 
-void inicializarResumen(Resumen_Continente *vec)
-{
-    Resumen_Continente *r;
-    const char *nombres[CONTINENTES] = {"Americas", "Europe", "Oceania", "Asia", "Africa", "Antarctica", "Indeterminado"};
-    int i;
-    for (i = 0; i < CONTINENTES; i++)
-    {
-        r = vec + i;
-        strcpy(r->continente, *(nombres + i));
-        r->registros = 0;
-        r->total_credito = 0.0;
-        r->total_debito = 0.0;
-    }
-}
-
 void destruirVector(Vector *v)
 {
     free(v->vec);
@@ -388,6 +365,21 @@ void insertarAlFinal(Vector *v, void *elem)
     void *ult = v->vec + (v->cantElem * v->tamElem);
     memcpy(ult, elem, v->tamElem);
     v->cantElem++;
+}
+
+void inicializarResumen(Resumen_Continente *vec)
+{
+    Resumen_Continente *r;
+    const char *nombres[CONTINENTES] = {"Americas", "Europe", "Oceania", "Asia", "Africa", "Antarctica", "Indeterminado"};
+    int i;
+    for (i = 0; i < CONTINENTES; i++)
+    {
+        r = vec + i;
+        strcpy(r->continente, *(nombres + i));
+        r->registros = 0;
+        r->total_credito = 0.0;
+        r->total_debito = 0.0;
+    }
 }
 
 bool cargarContinentes(Vector *v, char *nombArch)
@@ -1524,9 +1516,12 @@ void OpcionPromedioContinentePorAnio(void)
 
 void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[CONTINENTES], Vector *transferencias, Vector *continentes, Resumen_Pais **rp, int *contPaises, P_Continentes *pc, Intermedio_Arch *inter)
 {
-    int opcion;
+    int opcion=-1;
+    int valido;
+    char buffer[100];
+    char sobrante;
 
-    do
+    while (opcion != 10)
     {
         printf("\n\n1. Totales por país.\n"
                "2. Totales por continente.\n"
@@ -1539,13 +1534,21 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[CONTINENTES],
                "9. Promedio trimestral por continente, operación y año.\n"
                "10. Salir.\n\n");
 
-        printf("Elija una opcion: ");
-        scanf("%d", &opcion);
+        opcion = -1;
+        printf("Ingrese una opcion del 1 al 9 (10 para salir):");
+        do{
+            fgets(buffer, sizeof(buffer), stdin);
+            valido = (sscanf(buffer, "%d %c", &opcion, &sobrante) == 1 && opcion >= 1 && opcion <= 10);
+
+            if(!valido)
+                printf("Error! debe ingresar un numero valido: ");
+
+        }while(!valido);
 
         switch (opcion)
         {
         case 1:
-            MostrarArchivoPorPais(transferencias);
+            GenerarArchivoPorPais(transferencias);
             OrdenarPorMonto(t, m);
             break;
 
@@ -1592,5 +1595,8 @@ void Menu(Transferencias *t, OrdenMonto *m, Resumen_Continente vec[CONTINENTES],
             break;
         }
 
-    } while (opcion != 10);
+    }
 }
+
+//VAMOS BOCA POR LA SUDAMERICANA!
+//TE AMAMOS MATI!! <3
